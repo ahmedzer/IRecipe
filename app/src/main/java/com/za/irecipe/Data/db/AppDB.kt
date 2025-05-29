@@ -66,11 +66,11 @@ abstract class AppDB : RoomDatabase() {
 
 // Migration pour la version 1 → 2
 val MIGRATION_1_2 = object : Migration(1, 2) {
-    override fun migrate(database: SupportSQLiteDatabase) {
+    override fun migrate(db: SupportSQLiteDatabase) {
         // Ajoutez les nouvelles colonnes
-        database.execSQL("ALTER TABLE recipes ADD COLUMN Type TEXT DEFAULT ''")
-        database.execSQL("ALTER TABLE recipes ADD COLUMN Calories INTEGER DEFAULT 0")
-        database.execSQL("ALTER TABLE recipes ADD COLUMN Estimated_Time INTEGER DEFAULT 0")
+        db.execSQL("ALTER TABLE recipes ADD COLUMN Type TEXT DEFAULT ''")
+        db.execSQL("ALTER TABLE recipes ADD COLUMN Calories INTEGER DEFAULT 0")
+        db.execSQL("ALTER TABLE recipes ADD COLUMN Estimated_Time INTEGER DEFAULT 0")
         Log.d("Migration", "Migration de la version 1 à 2 appliquée avec succès")
     }
 }

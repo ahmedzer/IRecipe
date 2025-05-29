@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -69,7 +68,7 @@ fun RecipeCard(
                     Size(200f, 100f)
                 )
                 Text(
-                    "${recipe.title}",
+                    recipe.title,
                     modifier = Modifier
                         .padding(16.dp),
                     maxLines = 2,
@@ -93,7 +92,7 @@ fun RecipeCard(
                     modifier = Modifier.size(15.dp)
                 )
                 Text(
-                    text = "${recipe.type}",
+                    text = recipe.type,
                     fontSize = 12.sp,
                 )
                 Spacer(modifier = Modifier.width(10.dp))

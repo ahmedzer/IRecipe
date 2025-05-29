@@ -7,14 +7,14 @@ import com.za.irecipe.Domain.model.RecipeModel
 
 fun Recipe.toDomain(): RecipeModel {
     return RecipeModel(
-        id = this.id_recpie ?: 0,
-        title = this.Title ?: "",
-        ingredients = this.Ingredients ?: "",
-        instructions = this.Instructions ?: "",
-        imageName = this.Image_Name ?: "",
-        type = this.Type ?: "",
-        calories = this.Calories ?: 0,
-        estimatedTime = this.Estimated_Time ?: 0
+        id = this.id_recpie,
+        title = this.Title,
+        ingredients = this.Ingredients,
+        instructions = this.Instructions,
+        imageName = this.Image_Name,
+        type = this.Type,
+        calories = this.Calories,
+        estimatedTime = this.Estimated_Time
     )
 }
 
