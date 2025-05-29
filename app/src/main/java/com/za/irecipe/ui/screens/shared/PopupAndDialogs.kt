@@ -20,8 +20,7 @@ import androidx.compose.ui.window.PopupProperties
 @Composable
 fun PopupDetailedMessage(
     message: String,
-    onDismiss: () -> Unit,
-    offset: Offset
+    onDismiss: () -> Unit
 ) {
     val density = LocalDensity.current
     val context = LocalContext.current
@@ -31,7 +30,7 @@ fun PopupDetailedMessage(
 
     Popup(
         onDismissRequest = onDismiss,
-        offset = IntOffset(0, with(density) { screenHeightPx.roundToPx() - 150 }), // adjust the height for padding
+        offset = IntOffset(0, with(density) { screenHeightPx.roundToPx() - 150 }),
         properties = PopupProperties(focusable = true, dismissOnBackPress = true, dismissOnClickOutside = true)
     ) {
         Box(

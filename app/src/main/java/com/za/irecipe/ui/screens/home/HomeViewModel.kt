@@ -2,14 +2,11 @@ package com.za.irecipe.ui.screens.home
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.za.irecipe.Data.entities.Recipe
 import com.za.irecipe.Domain.model.PreparedRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeUseCase
@@ -18,7 +15,6 @@ import com.za.irecipe.Domain.useCase.GetRecipeByIdUseCase
 import com.za.irecipe.ui.screens.shared.getRandomNumbersFromPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

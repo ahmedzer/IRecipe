@@ -65,7 +65,8 @@ fun RecipeCard(
             ) {
                 LoadImageFromName(
                     "${recipe.imageName}.jpg",
-                    Size(200f, 100f)
+                    Size(200f, 100f),
+                    roundedCornerShape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp)
                 )
                 Text(
                     recipe.title,
@@ -161,7 +162,6 @@ fun InstructionCard(
             containerColor = MaterialTheme.colorScheme.tertiary
         ),
         shape = RoundedCornerShape(10.dp),
-        //elevation = CardDefaults.cardElevation(defaultElevation = 4.dp, hoveredElevation = 8.dp, pressedElevation = 8.dp)
     ){
         Column(
             modifier = Modifier.fillMaxSize().padding(10.dp)

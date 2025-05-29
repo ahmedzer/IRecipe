@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.za.irecipe.PreparationActivity
 import com.za.irecipe.R
@@ -90,7 +90,8 @@ fun RecipeScreen(
 
                         LoadImageFromName(
                             recipe!!.imageName+".jpg",
-                            Size(maxWidth, 200f)
+                            Size(maxWidth, 200f),
+                            roundedCornerShape = RoundedCornerShape(0.dp)
                         )
 
                         Row(
@@ -183,19 +184,26 @@ fun RecipeScreen(
                                     .background(color = MaterialTheme.colorScheme.tertiaryContainer, shape = RoundedCornerShape(8.dp)),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_ingredient),
-                                    modifier = Modifier.size(20.dp),
-                                    contentDescription = "ingredient icon",
-                                    tint = MaterialTheme.colorScheme.onBackground
-                                )
-                                Spacer(modifier = Modifier.width(5.dp))
-                                Text(
-                                    ingredient, modifier = Modifier.fillMaxWidth().padding(5.dp),
-                                    textAlign = TextAlign.Start,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_ingredient),
+                                        modifier = Modifier.size(20.dp),
+                                        contentDescription = "ingredient icon",
+                                        tint = MaterialTheme.colorScheme.onBackground
+                                    )
+                                    Spacer(modifier = Modifier.width(5.dp))
+                                    Text(
+                                        ingredient, modifier = Modifier.fillMaxWidth().padding(5.dp),
+                                        textAlign = TextAlign.Start,
+                                        maxLines = 2,
+                                        minLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
                             }
                         }
                     }
@@ -256,7 +264,6 @@ fun RecipeScreen(
     if(showPopup) {
         PopupDetailedMessage(
             message = popupMessage,
-            offset = popupOffset.toOffset(),
             onDismiss = {
                 showPopup = false
             }

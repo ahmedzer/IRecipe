@@ -47,7 +47,8 @@ fun loadImageUrl(imageName: String): State<String?> {
 fun LoadImageFromName(
     imageName: String,
     size: Size,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    roundedCornerShape: RoundedCornerShape
 ) {
     val context = LocalContext.current
     val imageUrl by loadImageUrl(imageName)
@@ -70,7 +71,7 @@ fun LoadImageFromName(
     Box(
         modifier = modifier
             .size(size.width.dp, size.height.dp)
-            .clip(RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp))
+            .clip(roundedCornerShape)
     ) {
         when (painterState) {
             is AsyncImagePainter.State.Success -> {
