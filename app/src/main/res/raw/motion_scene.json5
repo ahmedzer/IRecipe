@@ -1,0 +1,50 @@
+{
+  "ConstraintSets": {
+    "start": {
+      "app_name": {
+        "width": "wrap",
+        "height": "wrap",
+        "centerHorizontally": "parent",
+        "centerVertically": "parent"
+      },
+      "box": {
+        "width": "spread",
+        "start": ["parent", "start"],
+        "end": ["parent", "end"]
+      }
+    },
+    "end": {
+      "app_name": {
+        "width": "wrap",
+        "height": "wrap",
+        "start": ["parent", "start", 20],
+        "top": ["parent", "top", 20]
+      },
+      "box": {
+        "width": "spread",
+        "height": 30,
+        "start": ["parent", "start"],
+        "end": ["parent", "end"]
+      }
+    }
+  },
+  "Transitions": {
+    "default": {
+      "from": "start",
+      "to": "end",
+      "pathMotionArc": "startHorizontal",
+      "KeyFrames": {
+        "KeyAttributes": [
+          {
+            "target": ["app_name"],
+            "frames": [0, 100],
+            "scaleX": [1.2, 0.5],
+            "scaleY": [1.2, 0.5],
+            "translationY": [0, -50],
+            "translationX": [0, -50]
+          }
+        ]
+      }
+    }
+  }
+}

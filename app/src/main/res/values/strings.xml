@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">IRecipe</string>
+    <string name="title_activity_preparation">PreparationActivity</string>
+    <string name="title_activity_ai_search">AiSearchActivity</string>
+</resources>

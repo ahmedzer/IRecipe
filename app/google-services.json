@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "810365553707",
+    "project_id": "irecpie",
+    "storage_bucket": "irecpie.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810365553707:android:783fe7ea993d49d667ae6e",
+        "android_client_info": {
+          "package_name": "com.za.irecipe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCBvKtp6UDXkGd2PpuDcJQNOnoJnSpZfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
