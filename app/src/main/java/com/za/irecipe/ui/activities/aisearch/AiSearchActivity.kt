@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.za.irecipe.R
+import com.za.irecipe.ui.screens.shared.ButtonWithIcon
 import com.za.irecipe.ui.theme.IRecipeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -119,36 +120,24 @@ fun SearchMainScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             item {
-                Button(onClick = { galleryLauncher.launch("image/*") }) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_gallery),
-                            contentDescription = "Back Icon",
-                            modifier = Modifier.size(15.dp)
-                        )
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Text("Pick Image from Gallery")
-                    }
-                }
+                ButtonWithIcon(
+                    onClick = {
+                        galleryLauncher.launch("image/*")
+                    },
+                    text = "Pick Image from Gallery",
+                    icon = R.drawable.ic_gallery
+                )
             }
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { cameraLauncher.launch(null) }) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_camera),
-                            contentDescription = "Back Icon",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Text("Take Photo with Camera")
-                    }
-                }
+                ButtonWithIcon(
+                    onClick = {
+                        cameraLauncher.launch(null)
+                    },
+                    text = "Take Photo with Camera",
+                    icon = R.drawable.ic_camera
+                )
             }
 
             item {

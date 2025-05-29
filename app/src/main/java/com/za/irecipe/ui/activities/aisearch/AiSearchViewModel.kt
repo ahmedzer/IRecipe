@@ -69,6 +69,7 @@ class AiSearchViewModel @Inject constructor(
     fun setBitmapFromCamera(bmp: Bitmap?) {
         _bitmap.value = bmp
     }
+
     init {
         getAllRecipes()
     }

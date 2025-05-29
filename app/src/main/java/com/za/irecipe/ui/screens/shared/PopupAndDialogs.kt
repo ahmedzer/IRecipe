@@ -96,6 +96,13 @@ fun InsertPreparedRecipeDialog(
             )
             Text(recipeModel.title, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(20.dp))
+            ButtonWithIcon(
+                onClick = {
+
+                },
+                text = "Take Photo with Camera",
+                icon = R.drawable.ic_camera
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
