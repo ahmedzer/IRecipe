@@ -11,7 +11,7 @@ import java.util.Calendar
 import kotlin.random.Random
 
 
-class RandomRecipeReceiver: BroadcastReceiver() {
+class RandomRecipeReceiver : BroadcastReceiver() {
     override fun onReceive(p0: Context?, p1: Intent?) {
         val randomNumbers = List(4) { Random.nextInt(1, 13401) }
         Log.d("RandomRecipeReceiver", "Generated random numbers: $randomNumbers")
@@ -60,10 +60,8 @@ object AlarmScheduler {
                 )
             } catch (e: SecurityException) {
                 e.printStackTrace()
-                // You may notify user or fallback to a regular alarm if needed
             }
         } else {
-            // Maybe notify user or handle the case where permission is not granted
             Log.w("AlarmScheduler", "Cannot schedule exact alarms: permission not granted")
         }
     }

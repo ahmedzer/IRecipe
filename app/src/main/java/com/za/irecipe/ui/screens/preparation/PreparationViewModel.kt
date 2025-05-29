@@ -1,6 +1,8 @@
 package com.za.irecipe.ui.screens.preparation
 
 import android.util.Log
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.derivedStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.za.irecipe.Domain.model.PreparedRecipeModel
@@ -35,6 +37,17 @@ class PreparationViewModel @Inject constructor(
 
     private val _formattedTime = MutableStateFlow("00:00:00")
     val formattedTime: StateFlow<String> = _formattedTime.asStateFlow()
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> = _showDialog
+
+    fun openInsertionDialog() {
+        _showDialog.value = true
+    }
+
+    fun closeInsertionDialog() {
+        _showDialog.value = false
+    }
 
     fun startTimer() {
         if (isRunning) return

@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screens(val route: String, val icon: ImageVector, val label: String) {
-    object Home: Screens("home", Icons.Filled.Home, "Home")
+    object Home: Screens("home", Icons.Filled.Home, "Welcome")
     object Saved: Screens("saved", Icons.Filled.Menu, "Saved")
-    object RecipeScreen: Screens("recipe", Icons.Filled.Menu, "RecipeScreen")
+    object RecipeScreen: Screens("recipe", Icons.Filled.Menu, "Recipe")
 }

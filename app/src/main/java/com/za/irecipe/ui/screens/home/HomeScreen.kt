@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,18 +27,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -61,46 +58,27 @@ fun HomeScreen(
     val context = LocalContext.current
     homeViewModel.getDayRecipes(context)
 
-    val allRecipes by homeViewModel.allRecipes.observeAsState(emptyList())
-    val dayRecipes by homeViewModel.dayRecipes.observeAsState(emptyList())
+    val dayRecipes by homeViewModel.dayRecipes.collectAsState(emptyList())
+    val preparedRecipes by homeViewModel.allPreparedRecipes.collectAsState(emptyList())
     val lazyListState = rememberLazyListState()
 
-    // Header height range
-    val maxHeaderHeight = 200f
-    val minHeaderHeight = 40f
-    var headerHeight by remember { mutableStateOf(maxHeaderHeight) }
 
-    val nestedScrollConnection = remember {
+    val headerHeight by homeViewModel.headerHeight.collectAsState()
+    val isCollapsed by homeViewModel.isCollapsed.collectAsState()
+
+    val nestedScrollConnection = remember(homeViewModel) {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val delta = available.y
-                val newHeight = (headerHeight + delta).coerceIn(minHeaderHeight, maxHeaderHeight)
-                val consumed = newHeight - headerHeight
-                headerHeight = newHeight
-                return Offset(0f, consumed)
+                homeViewModel.adjustHeaderHeight(delta)
+                return Offset.Zero
             }
         }
     }
-    val isCollapsed by remember { derivedStateOf { headerHeight <= 150f } }
 
-    val backColor = MaterialTheme.colorScheme.background
-    val primColor = MaterialTheme.colorScheme.primaryContainer
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .drawWithCache {
-                val gradient = Brush.linearGradient(
-                    colors = listOf(
-                        primColor,
-                        backColor,
-                    ),
-                    start = Offset(0f, size.height / 3), // Start from middle
-                    end = Offset(0f, 0f)                // End at the top
-                )
-                onDrawBehind {
-                    drawRect(gradient)
-                }
-            }
             .nestedScroll(nestedScrollConnection)
     ) {
         // Collapsing header
@@ -112,13 +90,13 @@ fun HomeScreen(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "Welcome!",
+                    text = "Welcome to IRecipe",
                     fontSize = 24.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 AnimatedVisibility(visible = !isCollapsed) {
                     Text(
-                        text = "You have ${allRecipes.size} recipes",
+                        text = if(preparedRecipes.isNotEmpty())"\uD83D\uDE01\u200B You have prepared ${preparedRecipes.size} recipes !!" else "\u200B\uD83D\uDE1E\u200B You have no recipes",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -177,7 +155,7 @@ fun HomeScreen(
                             imageRes = R.drawable.findrecipe,
                             iconRes = R.drawable.ic_ai_algo,
                             onClick = {
-                                val intent = Intent(context,AiSearchActivity::class.java)
+                                val intent = Intent(context, AiSearchActivity::class.java)
                                 context.startActivity(intent)
                             }
                         )
@@ -215,6 +193,8 @@ fun RecipeActionCard(
     iconRes: Int,
     onClick: () -> Unit = {}
 ) {
+    val isDarkMode = isSystemInDarkTheme()
+
     Card(
         modifier = Modifier
             .width(300.dp)
@@ -241,21 +221,28 @@ fun RecipeActionCard(
                     .background(Color.Black.copy(alpha = 0.5f))
             )
             Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize().background(color = Color(if(isDarkMode)0x04C000000 else 0x00000000)),
+                verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    painter = painterResource(iconRes),
-                    contentDescription = "",
-                    modifier = Modifier.size(40.dp),
-                    tint = Color.White
-                )
-                Text(
-                    text = title,
-                    fontSize = 15.sp,
-                    color = Color.White
-                )
+                Column (
+                    modifier = Modifier.background(color = Color(0xB4000000)).fillMaxWidth(),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Icon(
+                        painter = painterResource(iconRes),
+                        contentDescription = "",
+                        modifier = Modifier.size(40.dp),
+                        tint = Color.White
+                    )
+                    Text(
+                        text = title,
+                        fontSize = 15.sp,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
             }
         }
     }

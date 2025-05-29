@@ -19,9 +19,9 @@ fun AppBottomNav(
         navController = navController,
         startDestination = Screens.Home.route,
 
-    ) {
+        ) {
         composable(Screens.Home.route) {
-            HomeScreen(navController  = navController)
+            HomeScreen(navController = navController)
         }
         composable(Screens.Saved.route) {
             SavedScreen()

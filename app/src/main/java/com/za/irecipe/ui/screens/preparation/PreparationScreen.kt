@@ -22,10 +22,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
@@ -51,6 +53,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.za.irecipe.ui.screens.shared.InsertPreparedRecipeDialog
+import com.za.irecipe.ui.screens.shared.PrimaryButton
 import com.za.irecipe.ui.theme.IRecipeTheme
 import kotlinx.coroutines.launch
 
@@ -76,23 +80,44 @@ fun PreparationScreen(
     }
 
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(pageCount = { recipeModel!!.getInstructionList().size})
-
+    val pagerState = rememberPagerState(pageCount = { recipeModel!!.getInstructionList().size })
+    val showInsertionDialog by preparationViewModel.showDialog.collectAsState()
     val selectedIndex = remember { derivedStateOf { pagerState.currentPage } }
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
-            TopAppBar(title = {
-                Text(text = recipeModel!!.title, fontSize = 20.sp, fontFamily = FontFamily.Cursive)
-            })
+            TopAppBar(
+                title = {
+                    Text(
+                        text = recipeModel?.title ?: "",
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily.Cursive
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back Icon"
+                        )
+                    }
+                },
+            )
         },
+
         bottomBar = {
-            Row (
-                modifier = Modifier.fillMaxWidth().navigationBarsPadding(),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ){
+            ) {
                 Text(
                     text = elapsedTime,
                     fontSize = 16.sp,
@@ -100,54 +125,41 @@ fun PreparationScreen(
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 CircularProgressIndicator(
-                    progress = {(selectedIndex.value.toFloat() + 1)/recipeModel!!.getInstructionList().size.toFloat()},
+                    progress = { (selectedIndex.value.toFloat() + 1) / recipeModel!!.getInstructionList().size.toFloat() },
                     color = MaterialTheme.colorScheme.secondary,
                     trackColor = Color.LightGray
                 )
                 Spacer(modifier = Modifier.width(20.dp))
-                Button(
-                    enabled = selectedIndex.value > 0,
+                PrimaryButton(
                     onClick = {
                         scope.launch {
                             pagerState.animateScrollToPage(selectedIndex.value - 1)
                         }
                     },
-                    colors = ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.background,
-                        disabledContainerColor = Color.Gray,
-                        disabledContentColor = MaterialTheme.colorScheme.background
-                    ),
-                ) {
-                    Text("Previous")
-                }
+                    text = "Previous"
+                )
                 Spacer(modifier = Modifier.width(20.dp))
-                Button(
+                PrimaryButton(
                     onClick = {
-                        if(selectedIndex.value < recipeModel!!.getInstructionList().size - 1){
+                        if (selectedIndex.value < recipeModel!!.getInstructionList().size - 1) {
                             scope.launch {
                                 pagerState.animateScrollToPage(selectedIndex.value + 1)
                             }
-                        }
-                        else {
+                        } else {
                             preparationViewModel.stopTimer()
+                            preparationViewModel.openInsertionDialog()
                         }
                     },
-                    colors = ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.background,
-                        disabledContainerColor = Color.LightGray,
-                        disabledContentColor = MaterialTheme.colorScheme.background
-                    ),
-                ) {
-                    Text(if(selectedIndex.value < recipeModel!!.getInstructionList().size - 1)"Next" else "Finish")
-                }
+                    text = if (selectedIndex.value < recipeModel!!.getInstructionList().size - 1) "Next" else "Finish"
+                )
             }
         }
     ) { innerPadding ->
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -157,7 +169,8 @@ fun PreparationScreen(
                 modifier = Modifier.fillMaxWidth(),
                 indicator = { tabPosition ->
                     TabRowDefaults.PrimaryIndicator(
-                        Modifier.tabIndicatorOffset(tabPosition[selectedIndex.value])
+                        Modifier
+                            .tabIndicatorOffset(tabPosition[selectedIndex.value])
                             .height(3.dp),
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -184,15 +197,16 @@ fun PreparationScreen(
 
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .fillMaxHeight()
                     .weight(1f)
             ) {
-                LazyColumn (
+                LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
-                ){
+                ) {
                     item {
                         Text(
                             text = recipeModel!!.getInstructionList()[it],
@@ -203,6 +217,16 @@ fun PreparationScreen(
                 }
 
             }
+        }
+
+        if (showInsertionDialog) {
+            InsertPreparedRecipeDialog(
+                onDismiss = {
+                    preparationViewModel.closeInsertionDialog()
+                },
+                onSubmit = {},
+                recipeModel = recipeModel!!
+            )
         }
     }
     DisposableEffect(key1 = preparationViewModel) {
@@ -224,7 +248,11 @@ fun NumberInCircle(
         modifier = Modifier
             .size(circleSize.dp)
             .background(Color.Transparent, shape = CircleShape)
-            .border(2.dp, if (isSelected) MaterialTheme.colorScheme.secondary else Color.LightGray, shape = CircleShape)
+            .border(
+                2.dp,
+                if (isSelected) MaterialTheme.colorScheme.secondary else Color.LightGray,
+                shape = CircleShape
+            )
     ) {
         Text(
             text = number.toString(),

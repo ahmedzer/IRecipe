@@ -16,7 +16,11 @@ import com.za.irecipe.ui.screens.shared.getRandomNumbersFromPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,14 +32,11 @@ class HomeViewModel @Inject constructor(
     private val getAllPreparedRecipeUseCase: GetAllPreparedRecipeUseCase
 ) : ViewModel() {
 
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
 
-    private val _allRecipes = MutableLiveData<List<RecipeModel>>(emptyList())
-    val allRecipes: LiveData<List<RecipeModel>> get() = _allRecipes
-
-    private val _dayRecipes = MutableLiveData<List<RecipeModel?>>(emptyList())
-    val dayRecipes: LiveData<List<RecipeModel?>> get() = _dayRecipes
+    private val _dayRecipes = MutableStateFlow<List<RecipeModel?>>(emptyList())
+    val dayRecipes: StateFlow<List<RecipeModel?>> get() = _dayRecipes
 
     private val _allPreparedRecipes = MutableStateFlow<List<PreparedRecipeModel>>(emptyList())
     val allPreparedRecipes: StateFlow<List<PreparedRecipeModel>> get() = _allPreparedRecipes
@@ -43,20 +44,18 @@ class HomeViewModel @Inject constructor(
     private val _selectedRecipe = MutableStateFlow<RecipeModel?>(null)
     val selectedRecipe: StateFlow<RecipeModel?> get() = _selectedRecipe
 
-    private fun getAllRecipes() {
-        _allRecipes.value = emptyList()
-        viewModelScope.launch(Dispatchers.IO) {
-            _isLoading.postValue(true)
-            try {
-                val recipes = getRecipesUseCase.invoke()
-                _allRecipes.postValue(recipes)
-            } catch (e: Exception) {
-                Log.d("HomeViewModel | getAllRecipes", e.message.toString())
-            } finally {
-                _isLoading.postValue(false)
-            }
-        }
-    }
+    //nested scroll handle
+    private val _headerHeight = MutableStateFlow(200f)
+    val headerHeight: StateFlow<Float> = _headerHeight.asStateFlow()
+
+    private val maxHeaderHeight = 200f
+    private val minHeaderHeight = 30f
+
+    val isCollapsed = headerHeight.map { it <= 150f }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        false
+    )
 
     private fun getAllPreparedRecipes() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -105,8 +104,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun adjustHeaderHeight(delta: Float) {
+        val newHeight = (_headerHeight.value + delta).coerceIn(minHeaderHeight, maxHeaderHeight)
+        _headerHeight.value = newHeight
+    }
+
     init {
-        getAllRecipes()
         getAllPreparedRecipes()
     }
 }
