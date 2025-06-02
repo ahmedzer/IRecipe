@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.za.irecipe.ui.screens.home.HomeScreen
 import com.za.irecipe.ui.screens.recipeScreen.RecipeScreen
 import com.za.irecipe.ui.screens.saved.SavedScreen
+import com.za.irecipe.ui.screens.weeklyschedule.ScheduleScreen
 
 
 @Composable
@@ -28,6 +29,9 @@ fun AppBottomNav(
         }
         composable(Screens.RecipeScreen.route) {
             RecipeScreen()
+        }
+        composable(Screens.ScheduleScreen.route) {
+            ScheduleScreen()
         }
     }
 }

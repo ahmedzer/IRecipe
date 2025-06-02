@@ -1,9 +1,11 @@
 package com.za.irecipe.Data.entities
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 
 @Entity(
     tableName = "prepared_recipe",
@@ -27,4 +29,13 @@ data class PreparedRecipe(
     val imagePath: String?,
     @ColumnInfo(name = "preparation_day")
     val preparationDay: String?
+)
+
+data class PreparedRecipeWithRecipe(
+    @Embedded val preparedRecipe: PreparedRecipe,
+    @Relation(
+        parentColumn = "id_recipe",
+        entityColumn = "id_recpie"
+    )
+    val recipe: Recipe?
 )

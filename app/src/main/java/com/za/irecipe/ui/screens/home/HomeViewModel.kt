@@ -71,16 +71,16 @@ class HomeViewModel @Inject constructor(
             try {
                 val ids = getRandomNumbersFromPreferences(context)
                 val recipes =
-                    mutableListOf<RecipeModel?>()  // Use a local list to accumulate the recipes
+                    mutableListOf<RecipeModel?>()
                 ids.forEachIndexed { index, i ->
                     val recipe = getRecipeByIdUseCase.invoke(i)
-                    recipes.add(recipe)  // Add the recipe to the local list
+                    recipes.add(recipe)
                 }
 
                 withContext(Dispatchers.Main) {
                     _dayRecipes.value = emptyList()
                     _dayRecipes.value =
-                        _dayRecipes.value.orEmpty() + recipes  // Safely update the state
+                        _dayRecipes.value + recipes
                 }
             } catch (e: Exception) {
                 Log.d("HomeViewModel | getRecipeById", e.message.toString())
@@ -95,16 +95,20 @@ class HomeViewModel @Inject constructor(
         navController.navigate("recipe") {
             popUpTo("home") {
                 inclusive = false
-                saveState = false
+                saveState = true
             }
             launchSingleTop = true
-            restoreState = false
+            restoreState = true
         }
     }
 
     fun adjustHeaderHeight(delta: Float) {
         val newHeight = (_headerHeight.value + delta).coerceIn(minHeaderHeight, maxHeaderHeight)
         _headerHeight.value = newHeight
+    }
+
+    fun resetHeader() {
+        _headerHeight.value = maxHeaderHeight
     }
 
     init {

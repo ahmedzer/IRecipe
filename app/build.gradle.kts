@@ -103,6 +103,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-analytics:21.5.0") // Use the latest version
 
     implementation (libs.firebase.storage)
+    implementation(libs.androidx.material.icons.extended)
     implementation (libs.glide)
     implementation (libs.accompanist.systemuicontroller)
     implementation(libs.coil.compose)

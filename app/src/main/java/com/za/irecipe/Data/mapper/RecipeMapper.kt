@@ -1,8 +1,10 @@
 package com.za.irecipe.Data.mapper
 
 import com.za.irecipe.Data.entities.PreparedRecipe
+import com.za.irecipe.Data.entities.PreparedRecipeWithRecipe
 import com.za.irecipe.Data.entities.Recipe
 import com.za.irecipe.Domain.model.PreparedRecipeModel
+import com.za.irecipe.Domain.model.PreparedRecipeWithRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
 
 fun Recipe.toDomain(): RecipeModel {
@@ -49,5 +51,19 @@ fun PreparedRecipeModel.toData(): PreparedRecipe {
         preparationTime = this.preparationTime,
         imagePath = this.imagePath,
         preparationDay = this.preparationDay
+    )
+}
+
+fun PreparedRecipeWithRecipe.toDomain(): PreparedRecipeWithRecipeModel {
+    return PreparedRecipeWithRecipeModel(
+        preparedRecipeModel = this.preparedRecipe.toDomain(),
+        recipeModel = this.recipe?.toDomain()
+    )
+}
+
+fun PreparedRecipeWithRecipeModel.toData(): PreparedRecipeWithRecipe {
+    return PreparedRecipeWithRecipe(
+        preparedRecipe = this.preparedRecipeModel.toData(),
+        recipe = this.recipeModel?.toData()
     )
 }

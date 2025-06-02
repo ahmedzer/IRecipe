@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Greeting(navController: NavHostController, context: Context) {
-    val navItems = listOf(Screens.Home, Screens.Saved)
+    val navItems = listOf(Screens.Home, Screens.ScheduleScreen, Screens.Saved)
 
     Scaffold(
         bottomBar = {
