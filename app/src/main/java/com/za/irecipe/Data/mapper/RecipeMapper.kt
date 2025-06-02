@@ -44,7 +44,7 @@ fun PreparedRecipe.toDomain(): PreparedRecipeModel {
 
 fun PreparedRecipeModel.toData(): PreparedRecipe {
     return PreparedRecipe(
-        id_prep = this.id_prep,
+        id_prep = null,
         idRecipe = this.id_recipe,
         preparationTime = this.preparationTime,
         imagePath = this.imagePath,

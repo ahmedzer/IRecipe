@@ -1,6 +1,12 @@
 package com.za.irecipe.ui.screens.preparation
 
+import android.graphics.Bitmap
+import android.os.Build
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +37,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -47,17 +54,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.za.irecipe.Domain.model.PreparedRecipeModel
 import com.za.irecipe.ui.screens.shared.InsertPreparedRecipeDialog
 import com.za.irecipe.ui.screens.shared.PrimaryButton
 import com.za.irecipe.ui.theme.IRecipeTheme
+import com.za.irecipe.util.timeStringToMinutes
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreparationScreen(
@@ -83,6 +94,21 @@ fun PreparationScreen(
     val pagerState = rememberPagerState(pageCount = { recipeModel!!.getInstructionList().size })
     val showInsertionDialog by preparationViewModel.showDialog.collectAsState()
     val selectedIndex = remember { derivedStateOf { pagerState.currentPage } }
+    val insertionResult by preparationViewModel.insertionResult.collectAsState()
+
+    val context = LocalContext.current
+
+    LaunchedEffect(insertionResult) {
+        when {
+            insertionResult != null && insertionResult!! > 0L -> {
+                Toast.makeText(context, "Recipe saved successfully", Toast.LENGTH_SHORT).show()
+                preparationViewModel.resetInsertionResult() // optional: reset state
+            }
+            insertionResult == -1L -> {
+                preparationViewModel.resetInsertionResult() // optional: reset state
+            }
+        }
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -224,8 +250,11 @@ fun PreparationScreen(
                 onDismiss = {
                     preparationViewModel.closeInsertionDialog()
                 },
-                onSubmit = {},
-                recipeModel = recipeModel!!
+                onSubmit = { preparedRecipe ->
+                    preparationViewModel.savePreparedRecipe(preparedRecipe)
+                },
+                recipeModel = recipeModel!!,
+                preparationTime = timeStringToMinutes(elapsedTime)
             )
         }
     }

@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
     <application
         android:name=".IRecipeApp"
         android:allowBackup="true"
@@ -27,6 +26,15 @@
             android:exported="false"
             android:label="@string/title_activity_preparation"
             android:theme="@style/Theme.IRecipe" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.za.irecipe.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+        </provider>
         <activity
             android:name=".MainActivity"
             android:exported="true"

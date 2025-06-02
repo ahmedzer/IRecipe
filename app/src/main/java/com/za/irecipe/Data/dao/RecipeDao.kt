@@ -12,18 +12,18 @@ import com.za.irecipe.Data.entities.Recipe
 interface RecipeDao {
 
     @Query("SELECT * FROM recipes")
-    fun getAll(): List<Recipe>
+    suspend fun getAll(): List<Recipe>
 
     @Query("SELECT * FROM recipes WHERE id_recpie = :id")
-    fun getById(id: Int): Recipe?
+    suspend fun getById(id: Int): Recipe?
 
     @Transaction
     @Query("SELECT * FROM prepared_recipe WHERE id_recipe = :recipeId")
-    fun getPreparedRecipesForRecipe(recipeId: Int): List<PreparedRecipe>
+    suspend fun getPreparedRecipesForRecipe(recipeId: Int): List<PreparedRecipe>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPreparedRecipe(preparedRecipe: PreparedRecipe): Long
 
     @Query("SELECT * FROM prepared_recipe")
-    fun getAllPreparedRecipes(): List<PreparedRecipe>
+    suspend fun getAllPreparedRecipes(): List<PreparedRecipe>
 }

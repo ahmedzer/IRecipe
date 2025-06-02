@@ -1,5 +1,14 @@
 package com.za.irecipe.ui.screens.shared
 
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +26,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -30,8 +45,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import androidx.core.content.FileProvider
+import com.za.irecipe.Domain.model.PreparedRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.R
+import com.za.irecipe.util.createImageFile
+import java.io.File
+import java.util.Date
 
 @Composable
 fun PopupDetailedMessage(
@@ -63,18 +83,33 @@ fun PopupDetailedMessage(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun InsertPreparedRecipeDialog(
-    onSubmit: () -> Unit,
+    onSubmit: (PreparedRecipeModel) -> Unit,
     onDismiss: () -> Unit,
-    recipeModel: RecipeModel
+    recipeModel: RecipeModel,
+    preparationTime: Double
 ) {
+    val context = LocalContext.current
+
+    var photoFile by remember { mutableStateOf<File?>(null) }
+    var photoUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedImageBitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success && photoUri != null) {
+            val source = ImageDecoder.createSource(context.contentResolver, photoUri!!)
+            selectedImageBitmap = ImageDecoder.decodeBitmap(source)
+        }
+    }
+
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false
-        )
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
         Column(
             modifier = Modifier
@@ -85,24 +120,49 @@ fun InsertPreparedRecipeDialog(
                 .padding(10.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Text(text = "Do you want to save you prepared recipe ?", fontSize = 16.sp)
+        ) {
+            Text(text = "Do you want to save your prepared recipe?", fontSize = 16.sp)
             Spacer(modifier = Modifier.height(20.dp))
+
             Icon(
                 painter = painterResource(id = R.drawable.chef_hat_svgrepo_com),
                 contentDescription = "chef hat",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp)
             )
+
             Text(recipeModel.title, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(20.dp))
+
             ButtonWithIcon(
                 onClick = {
-
+                    val imageFile = createImageFile(context)
+                    photoFile = imageFile
+                    photoUri = FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.provider",  // Be sure to match manifest
+                        imageFile
+                    )
+                    cameraLauncher.launch(photoUri!!)
                 },
                 text = "Take Photo with Camera",
                 icon = R.drawable.ic_camera
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            selectedImageBitmap?.let {
+                Image(
+                    bitmap = it.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(200.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -110,16 +170,33 @@ fun InsertPreparedRecipeDialog(
             ) {
                 TextButton(
                     onClick = {
+                        // delete temp image if exists
+                        photoFile?.let {
+                            if (it.exists()) it.delete()
+                        }
                         onDismiss()
                     }
                 ) {
                     Text("No, thanks")
                 }
+
                 Spacer(modifier = Modifier.width(30.dp))
 
                 TextButton(
                     onClick = {
-
+                        photoFile?.let {
+                            onSubmit(
+                                PreparedRecipeModel(
+                                    null,
+                                    id_recipe = recipeModel.id,
+                                    preparationTime = preparationTime,
+                                    imagePath = it.absolutePath,  // Save path to file
+                                    preparationDay = Date().time.toString()
+                                )
+                            )
+                            Toast.makeText(context, it.absolutePath, Toast.LENGTH_LONG).show()
+                            onDismiss()
+                        }
                     }
                 ) {
                     Text("Save")

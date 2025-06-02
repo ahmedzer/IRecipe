@@ -28,13 +28,12 @@ abstract class AppDB : RoomDatabase() {
                 val dbFile = context.getDatabasePath("database.db")
 
                 // Delete existing database (for testing purposes)
-                if (dbFile.exists()) {
-                    context.deleteDatabase("database.db")
-                    Log.d("Database", "Existing database deleted")
+                if (!dbFile.exists()) {
+                    copyDatabaseFromAssets(context, "database.db", dbFile)
+                    Log.d("Database", "Database copied from assets")
+                } else {
+                    Log.d("Database", "Database exists, skipping copy")
                 }
-
-                // Copy from assets
-                copyDatabaseFromAssets(context, "database.db", dbFile)
 
                 INSTANCE = Room.databaseBuilder(
                     context.applicationContext,

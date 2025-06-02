@@ -1,5 +1,6 @@
 package com.za.irecipe.Data.repository
 
+import android.util.Log
 import com.za.irecipe.Data.dao.RecipeDao
 import com.za.irecipe.Data.mapper.toData
 import com.za.irecipe.Data.mapper.toDomain
@@ -41,6 +42,7 @@ class RecipeRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao)
         return try {
             recipeDao.insertPreparedRecipe(preparedRecipe.toData())
         }catch (e: Exception) {
+            Log.e("RecipeRepository", "Error inserting prepared recipe: ${e.message}")
             e.printStackTrace()
             -1
         }

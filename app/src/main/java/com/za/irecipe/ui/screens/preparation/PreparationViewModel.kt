@@ -1,8 +1,11 @@
 package com.za.irecipe.ui.screens.preparation
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.za.irecipe.Domain.model.PreparedRecipeModel
@@ -40,6 +43,13 @@ class PreparationViewModel @Inject constructor(
 
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> = _showDialog
+
+    private val _bitmap = mutableStateOf<Bitmap?>(null)
+    val bitmap: State<Bitmap?> = _bitmap
+
+    fun setBitmapFromCamera(bmp: Bitmap?) {
+        _bitmap.value = bmp
+    }
 
     fun openInsertionDialog() {
         _showDialog.value = true
@@ -101,7 +111,12 @@ class PreparationViewModel @Inject constructor(
                 -1L
             }
             _insertionResult.value = result
+            Log.e("PreparationViewModel", "$result")
         }
+    }
+
+    fun resetInsertionResult() {
+        _insertionResult.value = null
     }
 
     override fun onCleared() {
