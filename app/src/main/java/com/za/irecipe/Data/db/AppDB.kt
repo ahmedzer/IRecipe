@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.za.irecipe.Data.dao.PreparationDao
 import com.za.irecipe.Data.dao.RecipeDao
 import com.za.irecipe.Data.entities.PreparedRecipe
 import com.za.irecipe.Data.entities.Recipe
@@ -18,6 +19,7 @@ import java.io.FileOutputStream
 abstract class AppDB : RoomDatabase() {
 
     abstract fun recipeDao(): RecipeDao
+    abstract fun preparationDao(): PreparationDao
 
     companion object {
         @Volatile

@@ -116,7 +116,8 @@ fun HomeScreen(
                     ) {
                         Icon(
                             imageVector = if(preparedRecipes.isNotEmpty()) Icons.Default.EmojiEvents else Icons.Default.EmojiEmotions,
-                            contentDescription = "state icon"
+                            contentDescription = "state icon",
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
