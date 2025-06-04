@@ -23,7 +23,7 @@ class SavedViewModel @Inject constructor(private val getAllPreparedRecipeWithRec
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _preparedRecipes.value = getAllPreparedRecipeWithRecipeUseCase.invoke(refresh)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

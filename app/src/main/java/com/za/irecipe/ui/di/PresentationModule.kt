@@ -1,11 +1,13 @@
 package com.za.irecipe.ui.di
 
 import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeUseCase
+import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeWithRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetRecipeByIdUseCase
 import com.za.irecipe.Domain.useCase.InsertPreparedRecipeUseCase
 import com.za.irecipe.ui.screens.home.HomeViewModel
 import com.za.irecipe.ui.screens.preparation.PreparationViewModel
+import com.za.irecipe.ui.screens.saved.SavedViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,5 +36,13 @@ object PresentationModule {
     ): PreparationViewModel {
 
         return PreparationViewModel(getRecipeByIdUseCase, insertPreparedRecipeUseCase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSavedViewModel(
+        getAllPreparedRecipeWithRecipeUseCase: GetAllPreparedRecipeWithRecipeUseCase
+    ): SavedViewModel {
+        return SavedViewModel(getAllPreparedRecipeWithRecipeUseCase)
     }
 }
