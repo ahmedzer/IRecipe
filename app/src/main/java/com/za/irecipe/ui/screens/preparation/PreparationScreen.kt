@@ -2,7 +2,6 @@ package com.za.irecipe.ui.screens.preparation
 
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +33,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -91,15 +93,18 @@ fun PreparationScreen(
     val selectedIndex = remember { derivedStateOf { pagerState.currentPage } }
     val insertionResult by preparationViewModel.insertionResult.collectAsState()
 
-    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(insertionResult) {
         when {
             insertionResult != null && insertionResult!! > 0L -> {
-                Toast.makeText(context, "Recipe saved successfully", Toast.LENGTH_SHORT).show()
-                preparationViewModel.resetInsertionResult() // optional: reset state
+                snackbarHostState.showSnackbar("Recipe saved successfully", duration = SnackbarDuration.Short)
+                preparationViewModel.resetInsertionResult()
+                preparationViewModel.resetInsertionResult()
             }
             insertionResult == -1L -> {
+                snackbarHostState.showSnackbar("Failed to save recipe", duration = SnackbarDuration.Short)
+                preparationViewModel.resetInsertionResult()
                 preparationViewModel.resetInsertionResult() // optional: reset state
             }
         }
@@ -107,6 +112,9 @@ fun PreparationScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             TopAppBar(
                 title = {
