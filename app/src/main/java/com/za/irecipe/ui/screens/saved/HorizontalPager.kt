@@ -62,7 +62,7 @@ fun CustomHorizontalPager(modifier: Modifier, tabs: List<PagerTab>) {
                 tabs.forEachIndexed { index, pagerTab ->
                     Tab(
                         text = {
-                            Text(text = tabs.get(index).title)
+                            Text(text = tabs[index].title)
                         },
                         icon = {
                             Icon(
@@ -90,16 +90,13 @@ fun CustomHorizontalPager(modifier: Modifier, tabs: List<PagerTab>) {
                 .fillMaxHeight()
                 .weight(1f)
         ) {
-            LazyColumn(
+            Column (
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                item {
-                    tabs.get(it).content
-                }
+                tabs[it].content()
             }
-
         }
     }
 }

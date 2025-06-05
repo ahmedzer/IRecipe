@@ -1,5 +1,6 @@
 package com.za.irecipe.ui.screens.saved
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HistoryToggleOff
 import androidx.compose.material.icons.filled.LocalDining
@@ -17,5 +18,5 @@ fun SavedScreen(
         PagerTab(title = "Cooking History", icon = Icons.Default.HistoryToggleOff, content = { CookingHistoryPage() }),
         PagerTab(title = "My Recipes", icon = Icons.Default.LocalDining, content = { CookingHistoryPage() })
     )
-    CustomHorizontalPager(modifier = Modifier, tabs = preparationPages)
+    CustomHorizontalPager(modifier = Modifier.fillMaxSize(), tabs = preparationPages)
 }

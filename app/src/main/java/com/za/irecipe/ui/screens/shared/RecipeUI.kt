@@ -2,11 +2,14 @@ package com.za.irecipe.ui.screens.shared
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,9 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,20 +30,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import com.za.irecipe.Domain.model.PreparedRecipeWithRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.R
 import com.za.irecipe.ui.theme.IRecipeTheme
+import com.za.irecipe.util.convertTimestampToDate
 
 @Composable
 fun RecipeCard(
@@ -84,7 +96,7 @@ fun RecipeCard(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.chef_hat_svgrepo_com),
@@ -134,7 +146,6 @@ fun RecipeCard(
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-
                 IconButton(
                     onClick = { }
                 ) {
@@ -178,6 +189,107 @@ fun InstructionCard(
     }
 }
 
+@Composable
+fun PreparedRecipeCard(
+    preparedRecipeWithRecipeModel: PreparedRecipeWithRecipeModel,
+    onClick: () -> Unit
+) {
+    val isDarkMode = isSystemInDarkTheme()
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(0.85f)
+            .height(400.dp)
+            .padding(vertical = 10.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            preparedRecipeWithRecipeModel.preparedRecipeModel.imagePath?.let {
+                AsyncImage(
+                    model = preparedRecipeWithRecipeModel.preparedRecipeModel.imagePath,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize().background(color = Color(if(isDarkMode)0x02C000000 else 0x00000000)),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Column (
+                        modifier = Modifier.background(color = Color(0x59000000)).fillMaxWidth().fillMaxHeight(0.5f),
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            Text(
+                                text = preparedRecipeWithRecipeModel.recipeModel?.title ?: "",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(5.dp))
+                            InfoRow(
+                                infoToDisplay = "Preparation Date",
+                                value = convertTimestampToDate(preparedRecipeWithRecipeModel.preparedRecipeModel?.preparationDay ?: "") ?: "",
+                                icon = Icons.Default.CalendarToday
+                            )
+                            Spacer(modifier = Modifier.height(5.dp))
+                            InfoRow(
+                                infoToDisplay = "Preparation Time",
+                                value = preparedRecipeWithRecipeModel.preparedRecipeModel?.preparationTime.toString().take(4) + " min",
+                                icon = Icons.Default.Timer
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoRow(
+    infoToDisplay: String,
+    value: String,
+    icon: ImageVector
+) {
+    Row (
+        modifier = Modifier.fillMaxWidth().padding(5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ){
+        Icon(
+            imageVector = icon,
+            contentDescription = "Info row icon",
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(5.dp))
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
+        ){
+            Text(infoToDisplay, fontWeight = FontWeight.SemiBold)
+            Text(value)
+        }
+    }
+}
+
 @Preview()
 @Composable
 fun InstructionCardPreview(
@@ -186,5 +298,17 @@ fun InstructionCardPreview(
 ) {
     IRecipeTheme {
         InstructionCard(inst = instText, index = index)
+    }
+}
+
+@Preview
+@Composable
+fun InfoRowPreview() {
+    IRecipeTheme {
+        InfoRow(
+            infoToDisplay = "Date",
+            value = "03./02/2000",
+            icon = Icons.Default.CalendarToday
+        )
     }
 }
