@@ -1,9 +1,7 @@
 package com.za.irecipe.util
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
-import android.net.Uri
 import android.os.Environment
 import java.io.File
 import java.util.Date

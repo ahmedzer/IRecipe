@@ -246,13 +246,15 @@ fun PreparedRecipeCard(
                             Spacer(modifier = Modifier.height(5.dp))
                             InfoRow(
                                 infoToDisplay = "Preparation Date",
-                                value = convertTimestampToDate(preparedRecipeWithRecipeModel.preparedRecipeModel?.preparationDay ?: "") ?: "",
+                                value = convertTimestampToDate(
+                                    preparedRecipeWithRecipeModel.preparedRecipeModel.preparationDay
+                                        ?: "") ?: "",
                                 icon = Icons.Default.CalendarToday
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             InfoRow(
                                 infoToDisplay = "Preparation Time",
-                                value = preparedRecipeWithRecipeModel.preparedRecipeModel?.preparationTime.toString().take(4) + " min",
+                                value = preparedRecipeWithRecipeModel.preparedRecipeModel.preparationTime.toString().take(4) + " min",
                                 icon = Icons.Default.Timer
                             )
                         }

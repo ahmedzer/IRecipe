@@ -11,9 +11,7 @@ import com.za.irecipe.ui.model.PagerTab
 import com.za.irecipe.ui.screens.saved.pages.CookingHistoryPage
 
 @Composable
-fun SavedScreen(
-    viewModel: SavedViewModel = hiltViewModel()
-) {
+fun SavedScreen() {
     val preparationPages = listOf(
         PagerTab(title = "Cooking History", icon = Icons.Default.HistoryToggleOff, content = { CookingHistoryPage() }),
         PagerTab(title = "My Recipes", icon = Icons.Default.LocalDining, content = { CookingHistoryPage() })
