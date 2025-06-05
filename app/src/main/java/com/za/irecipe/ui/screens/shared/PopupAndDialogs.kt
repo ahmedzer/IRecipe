@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -194,7 +193,6 @@ fun InsertPreparedRecipeDialog(
                                     preparationDay = Date().time.toString()
                                 )
                             )
-                            Toast.makeText(context, it.absolutePath, Toast.LENGTH_LONG).show()
                             onDismiss()
                         }
                     }
