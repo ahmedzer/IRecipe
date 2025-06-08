@@ -241,7 +241,8 @@ fun PreparedRecipeCard(
                             Text(
                                 text = preparedRecipeWithRecipeModel.recipeModel?.title ?: "",
                                 fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.secondary
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             InfoRow(
@@ -279,15 +280,16 @@ fun InfoRow(
         Icon(
             imageVector = icon,
             contentDescription = "Info row icon",
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.width(5.dp))
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ){
-            Text(infoToDisplay, fontWeight = FontWeight.SemiBold)
-            Text(value)
+            Text(infoToDisplay, fontWeight = FontWeight.SemiBold, color = Color.White)
+            Text(value, color = Color.White)
         }
     }
 }
