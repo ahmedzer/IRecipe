@@ -2,6 +2,8 @@ package com.za.irecipe.Domain
 
 import com.za.irecipe.Domain.repository.PreparationRepository
 import com.za.irecipe.Domain.repository.RecipeRepository
+import com.za.irecipe.Domain.repository.VisionRepository
+import com.za.irecipe.Domain.useCase.DetectObjectUseCase
 import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeWithRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllRecipeUseCase
@@ -46,5 +48,11 @@ object DomainModule {
     @Singleton
     fun provideGetAllUserPreparedRecipes(preparedRepository: PreparationRepository): GetAllPreparedRecipeWithRecipeUseCase {
         return GetAllPreparedRecipeWithRecipeUseCase(preparedRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDetectObjectUseCase(visionRepository: VisionRepository): DetectObjectUseCase {
+        return DetectObjectUseCase(visionRepository)
     }
 }

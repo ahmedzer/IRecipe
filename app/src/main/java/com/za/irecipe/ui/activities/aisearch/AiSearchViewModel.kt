@@ -11,10 +11,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.za.irecipe.Domain.model.DetectedObject
 import com.za.irecipe.Domain.model.RecipeModel
+import com.za.irecipe.Domain.useCase.DetectObjectUseCase
 import com.za.irecipe.Domain.useCase.GetAllRecipeUseCase
+import com.za.irecipe.ui.model.toByteArray
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,10 +27,11 @@ import javax.inject.Inject
 @HiltViewModel
 class AiSearchViewModel @Inject constructor(
     private val getAllRecipeUseCase: GetAllRecipeUseCase,
+    private val detectObjectUseCase: DetectObjectUseCase,
     application: Application
-): AndroidViewModel(application) {
+) : AndroidViewModel(application) {
 
-    private val _isLoading = MutableLiveData<Boolean>(false)
+    private var _isLoading = MutableLiveData<Boolean>(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _allRecipes = MutableLiveData<List<RecipeModel>>(emptyList())
@@ -33,6 +39,12 @@ class AiSearchViewModel @Inject constructor(
 
     private val _bitmap = mutableStateOf<Bitmap?>(null)
     val bitmap: State<Bitmap?> = _bitmap
+
+    private val _showDetectionDialog = MutableStateFlow(false)
+    val showDetectionDialog: StateFlow<Boolean> = _showDetectionDialog
+
+    private val _detectedIngredients = MutableLiveData<List<DetectedObject>>()
+    val detectedIngredients: LiveData<List<DetectedObject>> = _detectedIngredients
 
     private fun getAllRecipes() {
         _allRecipes.value = emptyList()
@@ -68,6 +80,33 @@ class AiSearchViewModel @Inject constructor(
 
     fun setBitmapFromCamera(bmp: Bitmap?) {
         _bitmap.value = bmp
+    }
+
+    fun showDetectionDialog() {
+        _showDetectionDialog.value = true
+    }
+
+    fun closeDetectionDialog() {
+        _showDetectionDialog.value = false
+        _bitmap.value = null
+        _detectedIngredients.value = emptyList()
+        _isLoading.value = false
+    }
+
+    fun detectIngredientsFromBitmap() {
+        val bmp = _bitmap.value ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val result = detectObjectUseCase.invoke(bmp.toByteArray())
+                Log.d("AiSearchViewModel", "Detected Ingredients: $result")
+                _detectedIngredients.postValue(result)
+            } catch (e: Exception) {
+                Log.e("AiSearchViewModel", "Detection failed: ${e.message}")
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
     }
 
     init {

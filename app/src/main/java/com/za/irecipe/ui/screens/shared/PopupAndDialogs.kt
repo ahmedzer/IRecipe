@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -45,6 +48,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.core.content.FileProvider
+import com.za.irecipe.Domain.model.DetectedObject
 import com.za.irecipe.Domain.model.PreparedRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.R
@@ -198,6 +202,86 @@ fun InsertPreparedRecipeDialog(
                     }
                 ) {
                     Text("Save")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun IngredientDetectionDialog(
+    onDetectClick: () -> Unit,
+    onDismiss: () -> Unit,
+    image: Bitmap,
+    isLoading: Boolean,
+    detectedIngredients: List<DetectedObject>,
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
+        Column(
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.background,
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .padding(10.dp).fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Ingredient Detector",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Image(
+                bitmap = image.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(200.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if (isLoading) {
+                CircularProgressIndicator()
+            }
+            if(detectedIngredients.isNotEmpty()) {
+                LazyRow (
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    items(detectedIngredients.size) {
+                        DetectedIngredientResponse(detectedIngredients[it])
+                        Spacer(modifier = Modifier.width(5.dp))
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                TextButton (
+                    onClick = {
+                        if(detectedIngredients.isEmpty()) {
+                            onDetectClick()
+                        } else {
+                            ///validate list of detected ingredients !!!
+                        }
+                    },
+                ) {
+                    Text(if(detectedIngredients.isEmpty())"Detect Ingredient" else "Validate")
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                TextButton (
+                    onClick = {
+                        onDismiss()
+                    },
+                ) {
+                    Text("Cancel")
                 }
             }
         }

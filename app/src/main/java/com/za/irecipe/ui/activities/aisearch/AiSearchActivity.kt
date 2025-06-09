@@ -32,6 +32,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.za.irecipe.R
 import com.za.irecipe.ui.screens.shared.ButtonWithIcon
+import com.za.irecipe.ui.screens.shared.IngredientDetectionDialog
 import com.za.irecipe.ui.theme.IRecipeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -72,6 +78,10 @@ fun SearchMainScreen(
 ) {
     val context = LocalContext.current
     val bitmap = viewModel.bitmap.value
+
+    val showDetectionDialog by viewModel.showDetectionDialog.collectAsState()
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val detectedIngredients by viewModel.detectedIngredients.observeAsState(emptyList())
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -143,15 +153,24 @@ fun SearchMainScreen(
             item {
                 Spacer(modifier = Modifier.height(24.dp))
                 bitmap?.let {
-                    Image(
-                        bitmap = it.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(200.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                    )
+                    viewModel.showDetectionDialog()
                 }
             }
+        }
+    }
+    if(showDetectionDialog) {
+        bitmap?.let { bitmap ->
+            IngredientDetectionDialog(
+                onDetectClick = {
+                    viewModel.detectIngredientsFromBitmap()
+                },
+                onDismiss = {
+                    viewModel.closeDetectionDialog()
+                },
+                bitmap,
+                isLoading = isLoading,
+                detectedIngredients = detectedIngredients
+            )
         }
     }
 }

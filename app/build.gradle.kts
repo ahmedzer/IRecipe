@@ -1,3 +1,15 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+val googleVisionApiKey: String = localProperties.getProperty("GOOGLE_VISION_API_KEY") ?: ""
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,7 +18,6 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
 }
-
 android {
     namespace = "com.za.irecipe"
     compileSdk = 35
@@ -17,12 +28,11 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-    }
+        buildConfigField("String", "GOOGLE_VISION_API_KEY", "\"$googleVisionApiKey\"")    }
 
     buildTypes {
         release {
@@ -41,6 +51,7 @@ android {
         jvmTarget = "17"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -114,4 +125,9 @@ dependencies {
     implementation (libs.tensorflow.lite.support)// for common tasks (e.g. image pre/post-processing)
     implementation (libs.tensorflow.lite.gpu) // optional, for GPU acceleration
     implementation (libs.tensorflow.lite.task.vision)
+
+    //retrofit
+    implementation (libs.retrofit2.retrofit)
+    implementation (libs.converter.moshi)
+    implementation (libs.logging.interceptor)
 }

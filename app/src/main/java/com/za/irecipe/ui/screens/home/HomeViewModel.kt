@@ -72,15 +72,14 @@ class HomeViewModel @Inject constructor(
                 val ids = getRandomNumbersFromPreferences(context)
                 val recipes =
                     mutableListOf<RecipeModel?>()
-                ids.forEachIndexed { index, i ->
+                ids.forEachIndexed { _, i ->
                     val recipe = getRecipeByIdUseCase.invoke(i)
                     recipes.add(recipe)
                 }
 
                 withContext(Dispatchers.Main) {
                     _dayRecipes.value = emptyList()
-                    _dayRecipes.value =
-                        _dayRecipes.value + recipes
+                    _dayRecipes.value += recipes
                 }
             } catch (e: Exception) {
                 Log.d("HomeViewModel | getRecipeById", e.message.toString())
