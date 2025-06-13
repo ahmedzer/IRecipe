@@ -223,7 +223,7 @@ fun IngredientDetectionDialog(
         Column(
             modifier = Modifier
                 .background(
-                    color = MaterialTheme.colorScheme.background,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     shape = RoundedCornerShape(4.dp)
                 )
                 .padding(10.dp).fillMaxWidth(),
@@ -235,6 +235,8 @@ fun IngredientDetectionDialog(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold
             )
+            Spacer(modifier = Modifier.height(20.dp))
+
             Image(
                 bitmap = image.asImageBitmap(),
                 contentDescription = null,

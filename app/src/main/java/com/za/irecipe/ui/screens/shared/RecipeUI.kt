@@ -64,14 +64,14 @@ fun RecipeCard(
             onCardClick()
         },
         modifier = Modifier
-            .width(200.dp).background(color = MaterialTheme.colorScheme.background, shape = RoundedCornerShape(10.dp)),
+            .width(200.dp).background(color = MaterialTheme.colorScheme.onPrimaryContainer, shape = RoundedCornerShape(10.dp)),
 
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp, hoveredElevation = 8.dp, pressedElevation = 8.dp)
     ) {
         Column(
             modifier = Modifier
-                .width(200.dp).background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(10.dp)),
+                .width(200.dp).background(color = MaterialTheme.colorScheme.onPrimaryContainer, shape = RoundedCornerShape(10.dp)),
         ) {
             Box(
             ) {
@@ -311,7 +311,7 @@ fun InfoRowPreview() {
     IRecipeTheme {
         InfoRow(
             infoToDisplay = "Date",
-            value = "03./02/2000",
+            value = "03/02/2000",
             icon = Icons.Default.CalendarToday
         )
     }
