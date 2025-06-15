@@ -173,7 +173,6 @@ fun InsertPreparedRecipeDialog(
             ) {
                 TextButton(
                     onClick = {
-                        // delete temp image if exists
                         photoFile?.let {
                             if (it.exists()) it.delete()
                         }
@@ -215,6 +214,7 @@ fun IngredientDetectionDialog(
     image: Bitmap,
     isLoading: Boolean,
     detectedIngredients: List<DetectedObject>,
+    onDeleteObject: (DetectedObject) -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -255,7 +255,12 @@ fun IngredientDetectionDialog(
                     modifier = Modifier.fillMaxWidth()
                 ){
                     items(detectedIngredients.size) {
-                        DetectedIngredientResponse(detectedIngredients[it])
+                        DetectedIngredientResponse(
+                            detectedIngredients[it],
+                            onDeleteObject = { objectToDelete ->
+                                onDeleteObject(objectToDelete)
+                            }
+                        )
                         Spacer(modifier = Modifier.width(5.dp))
                     }
                 }

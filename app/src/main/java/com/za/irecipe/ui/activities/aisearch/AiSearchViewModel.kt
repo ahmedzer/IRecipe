@@ -7,6 +7,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -45,6 +46,9 @@ class AiSearchViewModel @Inject constructor(
 
     private val _detectedIngredients = MutableLiveData<List<DetectedObject>>()
     val detectedIngredients: LiveData<List<DetectedObject>> = _detectedIngredients
+
+    private val _ingredientList = MutableStateFlow(emptyList<String>())
+    val ingredientList: StateFlow<List<String>> = _ingredientList
 
     private fun getAllRecipes() {
         _allRecipes.value = emptyList()
@@ -107,6 +111,12 @@ class AiSearchViewModel @Inject constructor(
                 _isLoading.postValue(false)
             }
         }
+    }
+
+    fun removeDetectedObject(detectedObject: DetectedObject) {
+        val currentList = _detectedIngredients.value.orEmpty().toMutableList()
+        currentList.remove(detectedObject)
+        _detectedIngredients.value = currentList
     }
 
     init {

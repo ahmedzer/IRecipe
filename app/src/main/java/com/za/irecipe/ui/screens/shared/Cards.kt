@@ -1,9 +1,13 @@
 package com.za.irecipe.ui.screens.shared
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -11,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +35,8 @@ import com.za.irecipe.ui.theme.IRecipeTheme
 
 @Composable
 fun DetectedIngredientResponse(
-    detectedObject: DetectedObject
+    detectedObject: DetectedObject,
+    onDeleteObject: (DetectedObject) -> Unit
 ) {
     Card(
         onClick = {
@@ -63,13 +69,66 @@ fun DetectedIngredientResponse(
             Spacer(modifier = Modifier.height(5.dp))
             IconButton(
                 onClick = {
-
+                    onDeleteObject(detectedObject)
                 },
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = null,
                     modifier = Modifier.width(20.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BannerWithImage(
+    title: String,
+    text: String,
+    image: Int
+) {
+    Card(
+        colors = CardColors(
+            containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            disabledContentColor = MaterialTheme.colorScheme.onBackground
+        ),
+        shape = RoundedCornerShape(7.dp),
+        modifier = Modifier.fillMaxWidth(0.95f),
+        elevation = CardDefaults.elevatedCardElevation(
+            defaultElevation = 10.dp
+        )
+    ) {
+        Row (
+            modifier = Modifier.padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ){
+            Column (
+                Modifier.fillMaxWidth(0.5f),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
+            ){
+                Text(
+                    text = title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = text,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row (
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Image(
+                    painter = painterResource(image),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -83,8 +142,11 @@ fun DetectedIngredientResponsePreview() {
         DetectedIngredientResponse(
             DetectedObject(
                 "Tomato",
-                0.005f
-            )
+                0.005f,
+            ),
+            onDeleteObject = {
+
+            }
         )
     }
 }
