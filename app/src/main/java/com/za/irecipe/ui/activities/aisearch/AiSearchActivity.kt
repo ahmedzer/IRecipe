@@ -138,7 +138,7 @@ fun SearchMainScreen(
                         expanded = true
                     },
                     text = "Add Ingredients",
-                    icon = Icons.Default.AddCircle
+                    icon = Icons.Default.AddCircle,
                 )
 
                 DropdownMenu(

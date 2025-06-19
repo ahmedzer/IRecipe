@@ -2,17 +2,18 @@ package com.za.irecipe.ui.screens.shared
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -84,10 +85,22 @@ fun DetectedIngredientResponse(
 
 @Composable
 fun BannerWithImage(
+    modifier: Modifier = Modifier,
     title: String,
     text: String,
-    image: Int
+    image: Int,
+    isClickable: Boolean = false,
+    onClick: () -> Unit = {}, // Optional click handler,
+    showArrow: Boolean = false
 ) {
+    val cardModifier = if (isClickable) {
+        modifier
+            .fillMaxWidth(0.98f)
+            .clickable { onClick() }
+    } else {
+        modifier.fillMaxWidth(0.98f)
+    }
+
     Card(
         colors = CardColors(
             containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -96,9 +109,9 @@ fun BannerWithImage(
             disabledContentColor = MaterialTheme.colorScheme.onBackground
         ),
         shape = RoundedCornerShape(7.dp),
-        modifier = Modifier.fillMaxWidth(0.95f),
+        modifier = cardModifier,
         elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 10.dp
+            defaultElevation = 4.dp
         )
     ) {
         Row (
@@ -121,6 +134,28 @@ fun BannerWithImage(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal
                 )
+                Spacer(modifier = Modifier.height(10.dp))
+                if(showArrow) {
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ){
+                        Text(
+                            text = "Get Started",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Icon(
+                            imageVector = Icons.Default.ArrowForwardIos,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.width(20.dp)
+                        )
+                    }
+
+                }
             }
             Row (
                 modifier = Modifier.fillMaxWidth()

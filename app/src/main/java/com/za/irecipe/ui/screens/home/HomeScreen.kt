@@ -1,6 +1,5 @@
 package com.za.irecipe.ui.screens.home
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -26,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.TagFaces
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -52,13 +50,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.za.irecipe.R
 import com.za.irecipe.ui.activities.aisearch.AiSearchActivity
+import com.za.irecipe.ui.model.BannerPage
+import com.za.irecipe.ui.screens.shared.BannerPager
 import com.za.irecipe.ui.screens.shared.RecipeCard
 
 @Composable
@@ -115,13 +111,13 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            imageVector = if(preparedRecipes.isNotEmpty()) Icons.Default.EmojiEvents else Icons.Default.EmojiEmotions,
+                            imageVector = if (preparedRecipes.isNotEmpty()) Icons.Default.EmojiEvents else Icons.Default.EmojiEmotions,
                             contentDescription = "state icon",
                             tint = MaterialTheme.colorScheme.tertiary
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = if(preparedRecipes.isNotEmpty())"You have prepared ${preparedRecipes.size} recipes !!" else "You have no recipes",
+                            text = if (preparedRecipes.isNotEmpty()) "You have prepared ${preparedRecipes.size} recipes !!" else "You have no recipes",
                             fontSize = 16.sp,
                             color = MaterialTheme.colorScheme.onBackground
                         )
@@ -172,29 +168,26 @@ fun HomeScreen(
             }
 
             item {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(0.95f),
-                ) {
-                    item {
-                        RecipeActionCard(
-                            title = "Discover Recipes with What I Have",
-                            imageRes = R.drawable.findrecipe,
-                            iconRes = R.drawable.ic_ai_algo,
+                BannerPager(
+                    pages = listOf(
+                        BannerPage(
+                            title = "AI Search",
+                            description = "Quickly find the best recipes using what you already have",
+                            image = R.drawable.find_ai_recipe,
                             onClick = {
                                 val intent = Intent(context, AiSearchActivity::class.java)
                                 context.startActivity(intent)
-                            }
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                    }
-                    item {
-                        RecipeActionCard(
+                            },
+                        ),
+                        BannerPage(
                             title = "Advanced Search",
-                            imageRes = R.drawable.findrecipe2,
-                            iconRes = R.drawable.ic_search
+                            description = "Easily explore recipes with filters for diet, time, and more",
+                            image = R.drawable.advanced_search,
+                            onClick = {}
                         )
-                    }
-                }
+                    ),
+                    modifier = Modifier
+                )
             }
             item {
                 Text(
@@ -247,15 +240,19 @@ fun RecipeActionCard(
                     .background(Color.Black.copy(alpha = 0.5f))
             )
             Column(
-                modifier = Modifier.fillMaxSize().background(color = Color(if(isDarkMode)0x04C000000 else 0x00000000)),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color(if (isDarkMode) 0x04C000000 else 0x00000000)),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column (
-                    modifier = Modifier.background(color = Color(0xB4000000)).fillMaxWidth(),
+                Column(
+                    modifier = Modifier
+                        .background(color = Color(0xB4000000))
+                        .fillMaxWidth(),
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally
-                ){
+                ) {
                     Icon(
                         painter = painterResource(iconRes),
                         contentDescription = "",

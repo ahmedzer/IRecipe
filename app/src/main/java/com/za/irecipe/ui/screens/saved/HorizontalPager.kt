@@ -37,7 +37,7 @@ fun CustomHorizontalPager(modifier: Modifier, tabs: List<PagerTab>) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        TabRow (
+        TabRow(
             selectedTabIndex = pagerState.currentPage,
             modifier = Modifier.fillMaxWidth(),
             indicator = { tabPosition ->
@@ -80,7 +80,7 @@ fun CustomHorizontalPager(modifier: Modifier, tabs: List<PagerTab>) {
                 .fillMaxHeight()
                 .weight(1f)
         ) {
-            Column (
+            Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
