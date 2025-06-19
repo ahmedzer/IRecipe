@@ -214,7 +214,8 @@ fun IngredientDetectionDialog(
     image: Bitmap,
     isLoading: Boolean,
     detectedIngredients: List<DetectedObject>,
-    onDeleteObject: (DetectedObject) -> Unit
+    onDeleteObject: (DetectedObject) -> Unit,
+    onValidate: (List<String>) -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -276,7 +277,7 @@ fun IngredientDetectionDialog(
                         if(detectedIngredients.isEmpty()) {
                             onDetectClick()
                         } else {
-                            ///validate list of detected ingredients !!!
+                            onValidate(detectedIngredients.map { it.name })
                         }
                     },
                 ) {

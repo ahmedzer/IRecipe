@@ -7,7 +7,6 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -117,6 +116,12 @@ class AiSearchViewModel @Inject constructor(
         val currentList = _detectedIngredients.value.orEmpty().toMutableList()
         currentList.remove(detectedObject)
         _detectedIngredients.value = currentList
+    }
+
+    fun addIngredients(ingredients: List<String>) {
+        val currentList = _ingredientList.value.toMutableList()
+        currentList.addAll(ingredients)
+        _ingredientList.value = currentList
     }
 
     init {

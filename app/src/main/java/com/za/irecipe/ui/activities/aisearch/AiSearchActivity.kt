@@ -219,7 +219,10 @@ fun SearchMainScreen(
                 image = bmp,
                 isLoading = isLoading,
                 detectedIngredients = detectedIngredients,
-                onDeleteObject = { obj -> viewModel.removeDetectedObject(obj) }
+                onDeleteObject = { obj -> viewModel.removeDetectedObject(obj) },
+                onValidate = { ingredients ->
+                    viewModel.addIngredients(ingredients)
+                }
             )
         }
     }
