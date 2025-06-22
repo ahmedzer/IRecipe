@@ -124,6 +124,12 @@ class AiSearchViewModel @Inject constructor(
         _ingredientList.value = currentList
     }
 
+    fun removeIngredient(ingredient: String) {
+        val currentList = _ingredientList.value.toMutableList()
+        currentList.remove(ingredient)
+        _ingredientList.value = currentList
+    }
+
     init {
         getAllRecipes()
     }

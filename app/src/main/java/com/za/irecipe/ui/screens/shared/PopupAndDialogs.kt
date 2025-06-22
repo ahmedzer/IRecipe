@@ -278,6 +278,7 @@ fun IngredientDetectionDialog(
                             onDetectClick()
                         } else {
                             onValidate(detectedIngredients.map { it.name })
+                            onDismiss()
                         }
                     },
                 ) {

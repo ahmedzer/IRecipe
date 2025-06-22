@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -29,6 +32,7 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.DoubleArrow
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -60,6 +64,7 @@ import com.za.irecipe.R
 import com.za.irecipe.ui.screens.shared.BannerWithImage
 import com.za.irecipe.ui.screens.shared.ButtonWithIcon
 import com.za.irecipe.ui.screens.shared.ButtonWithImageVector
+import com.za.irecipe.ui.screens.shared.IngredientCard
 import com.za.irecipe.ui.screens.shared.IngredientDetectionDialog
 import com.za.irecipe.ui.screens.shared.SecondaryButtonIcon
 import com.za.irecipe.ui.theme.IRecipeTheme
@@ -79,7 +84,10 @@ class AiSearchActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SearchMainScreen(viewModel = searchViewModel)
+                    SearchMainScreen(
+                        viewModel = searchViewModel,
+                        onFinish = { finish() }
+                    )
                 }
             }
         }
@@ -89,7 +97,8 @@ class AiSearchActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchMainScreen(
-    viewModel: AiSearchViewModel
+    viewModel: AiSearchViewModel,
+    onFinish: () -> Unit
 ) {
     val bitmap = viewModel.bitmap.value
 
@@ -116,7 +125,7 @@ fun SearchMainScreen(
             TopAppBar(
                 title = { Text("Find Recipe with what I have") },
                 navigationIcon = {
-                    IconButton(onClick = { /* TODO: back */ }) {
+                    IconButton(onClick = { onFinish() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -133,13 +142,25 @@ fun SearchMainScreen(
             var expanded by remember { mutableStateOf(false) }
 
             Box {
-                ButtonWithImageVector(
-                    onClick = {
-                        expanded = true
-                    },
-                    text = "Add Ingredients",
-                    icon = Icons.Default.AddCircle,
-                )
+                Column {
+                    ButtonWithImageVector(
+                        onClick = {
+                            expanded = true
+                        },
+                        text = "Add Ingredients",
+                        icon = Icons.Default.AddCircle,
+                    )
+                    if(ingredientList.isNotEmpty()) {
+                        ButtonWithImageVector(
+                            onClick = {
+                                expanded = true
+                            },
+                            text = "Find My Recipe",
+                            icon = Icons.Default.Search,
+                        )
+                    }
+                }
+
 
                 DropdownMenu(
                     expanded = expanded,
@@ -182,26 +203,73 @@ fun SearchMainScreen(
             }
         }
     ) { innerPadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
         ) {
+            Spacer(Modifier.height(10.dp))
 
-            item {
-                Spacer(Modifier.height(10.dp))
-                BannerWithImage(
-                    title = "Ai Searhc",
-                    text = "lkejflqfkhdfkqjhdj lqhflqdhf lqhfdj lqhdfqd lqhdf",
-                    image = R.drawable.search_design
-                )
+            BannerWithImage(
+                title = "Ai Search",
+                text = "lkejflqfkhdfkqjhdj lqhflqdhf lqhfdj lqhdfqd lqhdf",
+                image = R.drawable.search_design
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            bitmap?.let {
+                viewModel.showDetectionDialog()
             }
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                bitmap?.let {
-                    viewModel.showDetectionDialog()
+
+            // Ingredient Grid that fills the remaining screen
+            if (ingredientList.isNotEmpty()) {
+                Text(
+                    text = "My Ingredients:",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 150.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(ingredientList.size) { ingredient ->
+                        IngredientCard(
+                            ingredient = ingredientList[ingredient],
+                            onDelete = { viewModel.removeIngredient(ingredientList[ingredient]) }
+                        )
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_empty_cart),
+                            contentDescription = "empty list icon",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.fillMaxWidth(0.25f)
+                        )
+                        Text(
+                            "No ingredients added yet.",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
                 }
             }
         }

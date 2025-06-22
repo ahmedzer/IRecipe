@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Share
@@ -290,6 +291,46 @@ fun InfoRow(
         ){
             Text(infoToDisplay, fontWeight = FontWeight.SemiBold, color = Color.White)
             Text(value, color = Color.White)
+        }
+    }
+}
+
+@Composable
+fun IngredientCard(
+    ingredient: String,
+    modifier: Modifier = Modifier,
+    onDelete: (String) -> Unit
+) {
+    Card(
+        modifier = modifier.width(150.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+        )
+    )
+    {
+        Column(
+            modifier = modifier.fillMaxSize().padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement =  Arrangement.Center
+        ){
+            Text(
+                text = ingredient,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            IconButton(
+                onClick = {
+                    onDelete(ingredient)
+                }
+            ){
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.background
+                )
+            }
         }
     }
 }
