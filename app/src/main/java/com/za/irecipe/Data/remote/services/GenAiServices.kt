@@ -3,7 +3,6 @@ package com.za.irecipe.Data.remote.services
 import com.za.irecipe.Data.remote.model.GeminiRequest
 import com.za.irecipe.Data.remote.model.GeminiResponse
 import retrofit2.http.Body
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 

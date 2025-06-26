@@ -5,7 +5,6 @@ import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.za.irecipe.BuildConfig
 import com.za.irecipe.Data.entities.GeneratedRecipe
-import com.za.irecipe.Data.entities.Recipe
 import com.za.irecipe.Data.remote.model.Content
 import com.za.irecipe.Data.remote.model.GeminiRequest
 import com.za.irecipe.Data.remote.model.Part
