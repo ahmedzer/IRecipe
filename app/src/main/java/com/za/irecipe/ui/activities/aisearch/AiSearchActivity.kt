@@ -9,31 +9,23 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.DoubleArrow
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,19 +46,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import androidx.compose.ui.zIndex
+import com.spr.jetpack_loading.components.indicators.BallTrianglePathIndicator
 import com.za.irecipe.R
 import com.za.irecipe.ui.screens.shared.BannerWithImage
-import com.za.irecipe.ui.screens.shared.ButtonWithIcon
 import com.za.irecipe.ui.screens.shared.ButtonWithImageVector
 import com.za.irecipe.ui.screens.shared.IngredientCard
 import com.za.irecipe.ui.screens.shared.IngredientDetectionDialog
-import com.za.irecipe.ui.screens.shared.SecondaryButtonIcon
 import com.za.irecipe.ui.theme.IRecipeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -104,6 +95,8 @@ fun SearchMainScreen(
 
     val showDetectionDialog by viewModel.showDetectionDialog.collectAsState()
     val isLoading by viewModel.isLoading.observeAsState(false)
+    val isGenerating by viewModel.isGenerationInProgress.observeAsState(false)
+
     val detectedIngredients by viewModel.detectedIngredients.observeAsState(emptyList())
     val ingredientList by viewModel.ingredientList.collectAsState()
 
@@ -143,24 +136,26 @@ fun SearchMainScreen(
 
             Box {
                 Column {
-                    ButtonWithImageVector(
-                        onClick = {
-                            expanded = true
-                        },
-                        text = "Add Ingredients",
-                        icon = Icons.Default.AddCircle,
-                    )
-                    if(ingredientList.isNotEmpty()) {
+                    if(!isGenerating) {
+                        if(ingredientList.isNotEmpty()) {
+                            ButtonWithImageVector(
+                                onClick = {
+                                    viewModel.generateRecipes(ingredientList)
+                                },
+                                text = "Find My Recipe",
+                                icon = Icons.Default.Search,
+                            )
+                        }
                         ButtonWithImageVector(
                             onClick = {
                                 expanded = true
                             },
-                            text = "Find My Recipe",
-                            icon = Icons.Default.Search,
+                            text = "Add Ingredients",
+                            icon = Icons.Default.AddCircle,
                         )
+
                     }
                 }
-
 
                 DropdownMenu(
                     expanded = expanded,
@@ -203,71 +198,104 @@ fun SearchMainScreen(
             }
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            Spacer(Modifier.height(10.dp))
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .blur(if (isGenerating) 5.dp else 0.dp)
+            ) {
+                Spacer(Modifier.height(10.dp))
 
-            BannerWithImage(
-                title = "Ai Search",
-                text = "lkejflqfkhdfkqjhdj lqhflqdhf lqhfdj lqhdfqd lqhdf",
-                image = R.drawable.search_design
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            bitmap?.let {
-                viewModel.showDetectionDialog()
-            }
-
-            // Ingredient Grid that fills the remaining screen
-            if (ingredientList.isNotEmpty()) {
-                Text(
-                    text = "My Ingredients:",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(16.dp)
+                BannerWithImage(
+                    title = "Ai Search",
+                    text = "lkejflqfkhdfkqjhdj lqhflqdhf lqhfdj lqhdfqd lqhdf",
+                    image = R.drawable.search_design
                 )
 
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 150.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(ingredientList.size) { ingredient ->
-                        IngredientCard(
-                            ingredient = ingredientList[ingredient],
-                            onDelete = { viewModel.removeIngredient(ingredientList[ingredient]) }
-                        )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                bitmap?.let {
+                    viewModel.showDetectionDialog()
+                }
+
+                // Ingredient Grid that fills the remaining screen
+                if (ingredientList.isNotEmpty()) {
+                    Text(
+                        text = "My Ingredients:",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(16.dp)
+                    )
+
+                    ButtonWithImageVector(
+                        onClick = {
+                            viewModel.clearAllIngredient()
+                        },
+                        icon = Icons.Default.Delete,
+                        text = "Clear All",
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 150.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        items(ingredientList.size) { ingredient ->
+                            IngredientCard(
+                                ingredient = ingredientList[ingredient],
+                                onDelete = { viewModel.removeIngredient(ingredientList[ingredient]) }
+                            )
+                        }
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_empty_cart),
+                                contentDescription = "empty list icon",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.fillMaxWidth(0.25f)
+                            )
+                            Text(
+                                "No ingredients added yet.",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(top = 16.dp)
+                            )
+                        }
                     }
                 }
-            } else {
+            }
+            if (isGenerating) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                        .zIndex(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_empty_cart),
-                            contentDescription = "empty list icon",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.fillMaxWidth(0.25f)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        BallTrianglePathIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            movingBalls = 5
                         )
+                        Spacer(modifier = Modifier.height(50.dp))
                         Text(
-                            "No ingredients added yet.",
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.padding(top = 16.dp)
+                            text = "AI is generating your recipes...",
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium
                         )
                     }
                 }

@@ -73,14 +73,16 @@ fun ButtonWithIcon(
 fun ButtonWithImageVector(
     onClick: () -> Unit,
     text: String,
-    icon: ImageVector
+    icon: ImageVector,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = { onClick() },
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 4.dp,
             pressedElevation = 4.dp
-        )
+        ),
+        modifier = modifier
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically

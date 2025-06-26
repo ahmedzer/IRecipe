@@ -328,7 +328,7 @@ fun IngredientCard(
                     imageVector = Icons.Default.Delete,
                     contentDescription = null,
                     modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.background
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

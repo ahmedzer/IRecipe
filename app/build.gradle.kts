@@ -63,7 +63,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
 }
 
 dependencies {
@@ -123,11 +122,14 @@ dependencies {
 
     implementation (libs.tensorflow.lite) // or latest
     implementation (libs.tensorflow.lite.support)// for common tasks (e.g. image pre/post-processing)
-    implementation (libs.tensorflow.lite.gpu) // optional, for GPU acceleration
+    implementation (libs.tensorflow.lite.gpu)
     implementation (libs.tensorflow.lite.task.vision)
+    implementation("com.github.MahboubehSeyedpour:jetpack-loading:1.1.0")
 
     //retrofit
     implementation (libs.retrofit2.retrofit)
     implementation (libs.converter.moshi)
     implementation (libs.logging.interceptor)
+
+    implementation (libs.gson)
 }

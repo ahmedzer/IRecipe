@@ -77,6 +77,12 @@ object DBModule {
 
     @Provides
     @Singleton
+    fun provideVisionRepository(visionApiService: VisionApiService): VisionRepository {
+        return VisionRepositoryImpl(visionApiService)
+    }
+
+    @Provides
+    @Singleton
     @Named("gemini")
     fun provideGeminiRetrofit(moshi: Moshi): Retrofit {
         return Retrofit.Builder()

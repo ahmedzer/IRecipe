@@ -10,7 +10,6 @@ import com.za.irecipe.Domain.model.DetectedObject
 import com.za.irecipe.Domain.repository.VisionRepository
 import java.util.Base64
 import com.za.irecipe.BuildConfig
-import com.za.irecipe.Data.entities.GeneratedRecipe
 import javax.inject.Inject
 
 class VisionRepositoryImpl @Inject constructor(

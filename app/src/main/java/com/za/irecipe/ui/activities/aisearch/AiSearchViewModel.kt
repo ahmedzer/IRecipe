@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.za.irecipe.Data.entities.GeneratedRecipe
 import com.za.irecipe.Domain.model.DetectedObject
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.Domain.useCase.DetectObjectUseCase
@@ -50,6 +51,12 @@ class AiSearchViewModel @Inject constructor(
 
     private val _ingredientList = MutableStateFlow(emptyList<String>())
     val ingredientList: StateFlow<List<String>> = _ingredientList
+
+    private val _generatedRecipes = MutableLiveData<List<GeneratedRecipe>>(emptyList())
+    val generatedRecipes: LiveData<List<GeneratedRecipe>> = _generatedRecipes
+
+    private val _isGenerationInProgress = MutableLiveData<Boolean>(false)
+    val isGenerationInProgress: LiveData<Boolean> get() = _isGenerationInProgress
 
     private fun getAllRecipes() {
         _allRecipes.value = emptyList()
@@ -130,6 +137,26 @@ class AiSearchViewModel @Inject constructor(
         val currentList = _ingredientList.value.toMutableList()
         currentList.remove(ingredient)
         _ingredientList.value = currentList
+    }
+
+    fun clearAllIngredient() {
+        val currentList = _ingredientList.value.toMutableList()
+        currentList.clear()
+        _ingredientList.value = currentList
+    }
+
+    fun generateRecipes(ingredients: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isGenerationInProgress.postValue(true)
+                val generatedResult = generateRecipesUseCase.invoke(ingredients)
+                _generatedRecipes.postValue(generatedResult)
+            } catch (e: Exception) {
+                Log.e("AiSearchViewModel", "Generation failed: ${e.message}")
+            } finally {
+                _isGenerationInProgress.postValue(false)
+            }
+        }
     }
 
     init {
