@@ -44,8 +44,4 @@ class VisionRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun generateRecipe(ingredients: List<String>): List<GeneratedRecipe> {
-        TODO("Not yet implemented")
-    }
-
 }

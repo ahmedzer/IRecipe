@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.za.irecipe.Domain.model.DetectedObject
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.Domain.useCase.DetectObjectUseCase
+import com.za.irecipe.Domain.useCase.GenerateRecipesUseCase
 import com.za.irecipe.Domain.useCase.GetAllRecipeUseCase
 import com.za.irecipe.ui.model.toByteArray
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class AiSearchViewModel @Inject constructor(
     private val getAllRecipeUseCase: GetAllRecipeUseCase,
     private val detectObjectUseCase: DetectObjectUseCase,
+    private val generateRecipesUseCase: GenerateRecipesUseCase,
     application: Application
 ) : AndroidViewModel(application) {
 
