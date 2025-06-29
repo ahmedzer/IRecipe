@@ -33,7 +33,6 @@ class VisionRepositoryImpl @Inject constructor(
             return detectedDtos.map { DetectedObject(it.name, it.score) }
 
         } catch (e: retrofit2.HttpException) {
-            // Erreur HTTP (403, 401, etc)
             val errorBody = e.response()?.errorBody()?.string()
             Log.e("VisionRepositoryImpl", "HTTP error ${e.code()}: $errorBody")
             throw e
@@ -42,5 +41,4 @@ class VisionRepositoryImpl @Inject constructor(
             throw e
         }
     }
-
 }

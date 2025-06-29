@@ -1,5 +1,6 @@
 package com.za.irecipe.Data.mapper
 
+import com.za.irecipe.Data.entities.GeneratedRecipe
 import com.za.irecipe.Data.entities.PreparedRecipe
 import com.za.irecipe.Data.entities.PreparedRecipeWithRecipe
 import com.za.irecipe.Data.entities.Recipe
@@ -65,5 +66,18 @@ fun PreparedRecipeWithRecipeModel.toData(): PreparedRecipeWithRecipe {
     return PreparedRecipeWithRecipe(
         preparedRecipe = this.preparedRecipeModel.toData(),
         recipe = this.recipeModel?.toData()
+    )
+}
+
+fun GeneratedRecipe.toData(): Recipe {
+    return Recipe(
+        id_recpie = 0,
+        Title = this.Title,
+        Ingredients = this.Ingredients,
+        Instructions = this.Instructions,
+        Image_Name = "AI_GENERATED",
+        Type = this.Type,
+        Calories = this.Calories,
+        Estimated_Time = this.Estimated_Time
     )
 }

@@ -100,6 +100,8 @@ fun SearchMainScreen(
     val detectedIngredients by viewModel.detectedIngredients.observeAsState(emptyList())
     val ingredientList by viewModel.ingredientList.collectAsState()
 
+    val generatedRecipes by viewModel.generatedRecipes.observeAsState(emptyList())
+
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -203,7 +205,8 @@ fun SearchMainScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .blur(if (isGenerating) 5.dp else 0.dp)
+                    .blur(if (isGenerating) 5.dp else 0.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(Modifier.height(10.dp))
 
@@ -321,6 +324,15 @@ fun SearchMainScreen(
                 }
             )
         }
+    }
+
+    if(generatedRecipes.isNotEmpty()) {
+        GeneratedRecipeDialog(
+            onDismiss = { },
+            generatedRecipe = generatedRecipes,
+            onSaveRecipe = { },
+            onSaveAll = { }
+        )
     }
 }
 

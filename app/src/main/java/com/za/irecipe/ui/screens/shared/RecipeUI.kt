@@ -1,6 +1,7 @@
 package com.za.irecipe.ui.screens.shared
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,6 +50,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.AsyncImagePainter.State.Empty.painter
 import com.za.irecipe.Domain.model.PreparedRecipeWithRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.R
@@ -76,11 +81,40 @@ fun RecipeCard(
         ) {
             Box(
             ) {
-                LoadImageFromName(
-                    "${recipe.imageName}.jpg",
-                    Size(200f, 100f),
-                    roundedCornerShape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp)
-                )
+                if(recipe.imageName == "AI_GENERATED") {
+                    Image(
+                        painter = painterResource(R.drawable.generated_ai_recipe_image),
+                        contentDescription = "AI Generated Recipe Image",
+                        modifier = Modifier
+                            .size(200.dp, 100.dp)
+                            .clip(RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp))
+                            .background(Color.LightGray)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(200.dp, 100.dp)
+                            .clip(RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp))
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.generated_ai_recipe_image),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.matchParentSize()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(Color.Black.copy(alpha = 0.5f))
+                        )
+                    }
+                }
+                else {
+                    LoadImageFromName(
+                        "${recipe.imageName}.jpg",
+                        Size(200f, 100f),
+                        roundedCornerShape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp)
+                    )
+                }
                 Text(
                     recipe.title,
                     modifier = Modifier
