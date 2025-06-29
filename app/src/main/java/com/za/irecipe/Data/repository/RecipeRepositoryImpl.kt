@@ -2,6 +2,7 @@ package com.za.irecipe.Data.repository
 
 import android.util.Log
 import com.za.irecipe.Data.dao.RecipeDao
+import com.za.irecipe.Data.entities.SavedRecipe
 import com.za.irecipe.Data.mapper.toData
 import com.za.irecipe.Data.mapper.toDomain
 import com.za.irecipe.Domain.model.PreparedRecipeModel
@@ -15,8 +16,8 @@ class RecipeRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao)
         return try {
             recipeDao.getAll().map { it.toDomain() }
         } catch (e: Exception) {
-            e.printStackTrace() // Log l'erreur
-            emptyList() // Retourne une liste vide en cas d'erreur
+            e.printStackTrace()
+            emptyList()
         }
     }
 
@@ -24,7 +25,7 @@ class RecipeRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao)
         return try {
             recipeDao.getById(id)!!.toDomain()
         } catch (e: Exception) {
-            e.printStackTrace() // Log l'erreur
+            e.printStackTrace()
             null
         }
     }
@@ -33,8 +34,8 @@ class RecipeRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao)
         return try {
             recipeDao.getPreparedRecipesForRecipe(recipeId).map { it.toDomain() }
         } catch (e: Exception) {
-            e.printStackTrace() // Log l'erreur
-            emptyList() // Retourne une liste vide en cas d'erreur
+            e.printStackTrace()
+            emptyList()
         }
     }
 
@@ -56,4 +57,19 @@ class RecipeRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao)
             emptyList()
         }
     }
+
+    override suspend fun saveAiRecipe(recipe: RecipeModel): Long {
+        return try {
+            val generatedId = recipeDao.insertRecipe(recipe.toData()).toInt()
+            val savedRecipe = SavedRecipe(
+                id_recipe = generatedId,
+                saved_type = "AI"
+            )
+            recipeDao.insertSavedRecipe(savedRecipe)
+        }catch (e: Exception) {
+            e.printStackTrace()
+            -1
+        }
+    }
+
 }

@@ -12,11 +12,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.za.irecipe.Data.entities.GeneratedRecipe
+import com.za.irecipe.Data.mapper.toData
+import com.za.irecipe.Data.mapper.toDomain
 import com.za.irecipe.Domain.model.DetectedObject
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.Domain.useCase.DetectObjectUseCase
 import com.za.irecipe.Domain.useCase.GenerateRecipesUseCase
 import com.za.irecipe.Domain.useCase.GetAllRecipeUseCase
+import com.za.irecipe.Domain.useCase.InsertRecipeUseCase
 import com.za.irecipe.ui.model.toByteArray
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +34,7 @@ class AiSearchViewModel @Inject constructor(
     private val getAllRecipeUseCase: GetAllRecipeUseCase,
     private val detectObjectUseCase: DetectObjectUseCase,
     private val generateRecipesUseCase: GenerateRecipesUseCase,
+    private val insertRecipeUseCase: InsertRecipeUseCase,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -57,6 +61,9 @@ class AiSearchViewModel @Inject constructor(
 
     private val _isGenerationInProgress = MutableLiveData<Boolean>(false)
     val isGenerationInProgress: LiveData<Boolean> get() = _isGenerationInProgress
+
+    private val _insertionResult = MutableStateFlow<Long?>(null)
+    val insertionResult: StateFlow<Long?> get() = _insertionResult
 
     private fun getAllRecipes() {
         _allRecipes.value = emptyList()
@@ -157,6 +164,30 @@ class AiSearchViewModel @Inject constructor(
                 _isGenerationInProgress.postValue(false)
             }
         }
+    }
+
+    fun onCloseRecipeDialog() {
+        _generatedRecipes.value = emptyList()
+        _ingredientList.value = emptyList()
+    }
+
+    fun onSaveRecipe(recipe: GeneratedRecipe) {
+        viewModelScope.launch {
+            val result = try {
+                withContext(Dispatchers.IO) {
+                    insertRecipeUseCase.invoke(recipe.toData().toDomain())
+                }
+            } catch (e: Exception) {
+                Log.e("AISearchViewModel", "Error inserting recipe", e)
+                -1L
+            }
+            _insertionResult.value = result
+            Log.e("AISearchViewModel", "$result")
+        }
+    }
+
+    fun resetInsertionResult() {
+        _insertionResult.value = null
     }
 
     init {

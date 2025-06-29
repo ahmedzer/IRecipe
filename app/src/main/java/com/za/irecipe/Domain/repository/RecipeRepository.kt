@@ -35,4 +35,9 @@ interface RecipeRepository {
      * get all prepared recipes
      * */
     suspend fun getAllPreparedRecipes(): List<PreparedRecipeModel>
+
+    /**
+     * save ai generated recipe
+     * */
+    suspend fun saveAiRecipe(recipe: RecipeModel): Long
 }

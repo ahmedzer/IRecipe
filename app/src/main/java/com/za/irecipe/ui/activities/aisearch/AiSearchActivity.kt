@@ -33,11 +33,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -114,8 +118,29 @@ fun SearchMainScreen(
         viewModel.setBitmapFromCamera(bmp)
     }
 
+    val insertionResult by viewModel.insertionResult.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(insertionResult) {
+        when {
+            insertionResult != null && insertionResult!! > 0L -> {
+                snackbarHostState.showSnackbar("Recipe saved successfully", duration = SnackbarDuration.Short)
+                viewModel.resetInsertionResult()
+                viewModel.resetInsertionResult()
+            }
+            insertionResult == -1L -> {
+                snackbarHostState.showSnackbar("Failed to save recipe", duration = SnackbarDuration.Short)
+                viewModel.resetInsertionResult()
+                viewModel.resetInsertionResult()
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             TopAppBar(
                 title = { Text("Find Recipe with what I have") },
