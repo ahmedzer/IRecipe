@@ -3,6 +3,7 @@ package com.za.irecipe.Data.repository
 import android.util.Log
 import com.za.irecipe.Data.dao.RecipeDao
 import com.za.irecipe.Data.entities.SavedRecipe
+import com.za.irecipe.Data.entities.SavedWithRecipe
 import com.za.irecipe.Data.mapper.toData
 import com.za.irecipe.Data.mapper.toDomain
 import com.za.irecipe.Domain.model.PreparedRecipeModel
@@ -69,6 +70,15 @@ class RecipeRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao)
         }catch (e: Exception) {
             e.printStackTrace()
             -1
+        }
+    }
+
+    override suspend fun getAllSavedRecipes(): List<SavedWithRecipe> {
+        return try {
+            recipeDao.getAllSavedRecipes()
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
         }
     }
 

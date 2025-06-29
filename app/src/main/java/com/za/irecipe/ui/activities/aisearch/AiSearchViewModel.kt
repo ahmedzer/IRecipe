@@ -70,6 +70,7 @@ class AiSearchViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.postValue(true)
             try {
+                getAllRecipeUseCase.refreshData()
                 val recipes = getAllRecipeUseCase.invoke()
                 _allRecipes.postValue(recipes)
             } catch (e: Exception) {
@@ -184,6 +185,10 @@ class AiSearchViewModel @Inject constructor(
             _insertionResult.value = result
             Log.e("AISearchViewModel", "$result")
         }
+    }
+
+    fun isRecipeSaved(idRecipe: Int): Boolean {
+        return getAllRecipeUseCase.isRecipeSaved(idRecipe)
     }
 
     fun resetInsertionResult() {

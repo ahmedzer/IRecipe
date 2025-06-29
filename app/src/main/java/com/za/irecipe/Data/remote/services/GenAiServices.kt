@@ -12,4 +12,10 @@ interface GeminiApiService {
         @Query("key") apiKey: String,
         @Body request: GeminiRequest
     ): GeminiResponse
+
+    @POST("v1beta/models/gemini-pro-vision:generateContent")
+    suspend fun detectIngredients(
+        @Query("key") apiKey: String,
+        @Body request: GeminiRequest
+    ): GeminiResponse
 }

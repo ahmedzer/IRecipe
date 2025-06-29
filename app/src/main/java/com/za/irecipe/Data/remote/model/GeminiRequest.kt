@@ -6,5 +6,13 @@ data class GeminiRequest(
 )
 
 data class Content(val parts: List<Part>)
-data class Part(val text: String)
+data class Part(
+    val text: String? = null,
+    val inlineData: InlineData? = null
+)
+
+data class InlineData(
+    val mimeType: String,
+    val data: String
+)
 data class GenerationConfig(val temperature: Double = 0.7)

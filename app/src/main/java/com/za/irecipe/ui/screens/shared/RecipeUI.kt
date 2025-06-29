@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,8 +49,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
-import coil3.compose.AsyncImagePainter.State.Empty.painter
 import com.za.irecipe.Domain.model.PreparedRecipeWithRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.R
@@ -70,14 +67,14 @@ fun RecipeCard(
             onCardClick()
         },
         modifier = Modifier
-            .width(200.dp).background(color = MaterialTheme.colorScheme.onPrimaryContainer, shape = RoundedCornerShape(10.dp)),
+            .width(250.dp).background(color = MaterialTheme.colorScheme.onPrimaryContainer, shape = RoundedCornerShape(10.dp)),
 
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp, hoveredElevation = 8.dp, pressedElevation = 8.dp)
     ) {
         Column(
             modifier = Modifier
-                .width(200.dp).background(color = MaterialTheme.colorScheme.onPrimaryContainer, shape = RoundedCornerShape(10.dp)),
+                .width(280.dp).height(200.dp).background(color = MaterialTheme.colorScheme.onPrimaryContainer, shape = RoundedCornerShape(10.dp)),
         ) {
             Box(
             ) {
@@ -86,13 +83,13 @@ fun RecipeCard(
                         painter = painterResource(R.drawable.generated_ai_recipe_image),
                         contentDescription = "AI Generated Recipe Image",
                         modifier = Modifier
-                            .size(200.dp, 100.dp)
+                            .size(250.dp, 120.dp)
                             .clip(RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp))
                             .background(Color.LightGray)
                     )
                     Box(
                         modifier = Modifier
-                            .size(200.dp, 100.dp)
+                            .size(250.dp, 120.dp)
                             .clip(RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp))
                     ) {
                         Image(
@@ -111,7 +108,7 @@ fun RecipeCard(
                 else {
                     LoadImageFromName(
                         "${recipe.imageName}.jpg",
-                        Size(200f, 100f),
+                        Size(250f, 120f),
                         roundedCornerShape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp)
                     )
                 }
@@ -119,7 +116,7 @@ fun RecipeCard(
                     recipe.title,
                     modifier = Modifier
                         .padding(16.dp),
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = Color.White,
                     fontSize = 14.sp,
@@ -141,6 +138,8 @@ fun RecipeCard(
                 )
                 Text(
                     text = recipe.type,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     fontSize = 12.sp,
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -165,7 +164,7 @@ fun RecipeCard(
                     Icon(
                         imageVector = Icons.Default.Info,
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(25.dp),
                         tint = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
@@ -176,7 +175,7 @@ fun RecipeCard(
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(25.dp),
                         tint = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
@@ -186,7 +185,7 @@ fun RecipeCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Share,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(25.dp),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primaryContainer
                     )

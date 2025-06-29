@@ -21,7 +21,6 @@ data class SavedRecipe(
     @PrimaryKey(autoGenerate = true) val id_saved: Int = 0,
     val id_recipe: Int,
     val saved_type: String, // should be "AI" or "Manual"
-    val saved_at: Long = System.currentTimeMillis()
 )
 
 data class SavedWithRecipe(

@@ -42,4 +42,8 @@ interface RecipeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSavedRecipe(savedRecipe: SavedRecipe): Long
+
+    @Transaction
+    @Query("SELECT * FROM saved_recipes")
+    suspend fun getAllSavedRecipes(): List<SavedWithRecipe>
 }

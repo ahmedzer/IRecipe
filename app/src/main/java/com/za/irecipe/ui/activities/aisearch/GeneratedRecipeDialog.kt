@@ -51,7 +51,7 @@ fun GeneratedRecipeDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Generated Recipes",
+                    text = "AI Suggested Recipes",
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )

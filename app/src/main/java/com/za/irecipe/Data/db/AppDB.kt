@@ -11,11 +11,12 @@ import com.za.irecipe.Data.dao.PreparationDao
 import com.za.irecipe.Data.dao.RecipeDao
 import com.za.irecipe.Data.entities.PreparedRecipe
 import com.za.irecipe.Data.entities.Recipe
+import com.za.irecipe.Data.entities.SavedRecipe
 import java.io.File
 import java.io.FileOutputStream
 
 
-@Database(entities = [Recipe::class, PreparedRecipe::class], version = 2, exportSchema = false)
+@Database(entities = [Recipe::class, PreparedRecipe::class, SavedRecipe::class], version = 4, exportSchema = false)
 abstract class AppDB : RoomDatabase() {
 
     abstract fun recipeDao(): RecipeDao
@@ -28,8 +29,6 @@ abstract class AppDB : RoomDatabase() {
         fun getInstance(context: Context): AppDB {
             return INSTANCE ?: synchronized(this) {
                 val dbFile = context.getDatabasePath("database.db")
-
-                // Delete existing database (for testing purposes)
                 if (!dbFile.exists()) {
                     copyDatabaseFromAssets(context, "database.db", dbFile)
                     Log.d("Database", "Database copied from assets")

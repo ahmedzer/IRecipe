@@ -13,22 +13,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -162,28 +168,50 @@ fun SearchMainScreen(
             var expanded by remember { mutableStateOf(false) }
 
             Box {
-                Column {
+                Row  {
                     if(!isGenerating) {
                         if(ingredientList.isNotEmpty()) {
-                            ButtonWithImageVector(
+                            FloatingActionButton(
                                 onClick = {
                                     viewModel.generateRecipes(ingredientList)
                                 },
-                                text = "Find My Recipe",
-                                icon = Icons.Default.Search,
-                            )
+                                shape = CircleShape,
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = null
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            FloatingActionButton(
+                                onClick = {
+                                    viewModel.clearAllIngredient()
+                                },
+                                shape = CircleShape,
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.DeleteOutline,
+                                    contentDescription = null
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
                         }
-                        ButtonWithImageVector(
+                        FloatingActionButton(
                             onClick = {
                                 expanded = true
                             },
-                            text = "Add Ingredients",
-                            icon = Icons.Default.AddCircle,
-                        )
-
+                            shape = CircleShape,
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
-
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
@@ -255,14 +283,6 @@ fun SearchMainScreen(
                         modifier = Modifier.padding(16.dp)
                     )
 
-                    ButtonWithImageVector(
-                        onClick = {
-                            viewModel.clearAllIngredient()
-                        },
-                        icon = Icons.Default.Delete,
-                        text = "Clear All",
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(minSize = 150.dp),
                         modifier = Modifier
@@ -300,6 +320,11 @@ fun SearchMainScreen(
                             Text(
                                 "No ingredients added yet.",
                                 style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(top = 16.dp)
+                            )
+                            Text(
+                                "Click on the + button to add ingredients.",
+                                style = MaterialTheme.typography.titleSmall,
                                 modifier = Modifier.padding(top = 16.dp)
                             )
                         }
@@ -353,7 +378,9 @@ fun SearchMainScreen(
 
     if(generatedRecipes.isNotEmpty()) {
         GeneratedRecipeDialog(
-            onDismiss = { },
+            onDismiss = {
+                viewModel.onCloseRecipeDialog()
+            },
             generatedRecipe = generatedRecipes,
             onSaveRecipe = { },
             onSaveAll = { }

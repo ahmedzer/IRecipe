@@ -6,15 +6,12 @@ import com.za.irecipe.Data.dao.PreparationDao
 import com.za.irecipe.Data.dao.RecipeDao
 import com.za.irecipe.Data.db.AppDB
 import com.za.irecipe.Data.remote.services.GeminiApiService
-import com.za.irecipe.Data.remote.services.VisionApiService
 import com.za.irecipe.Data.repository.GenAiRepositoryImpl
 import com.za.irecipe.Data.repository.PreparationRepositoryImpl
 import com.za.irecipe.Data.repository.RecipeRepositoryImpl
-import com.za.irecipe.Data.repository.VisionRepositoryImpl
 import com.za.irecipe.Domain.repository.GenAiRepository
 import com.za.irecipe.Domain.repository.PreparationRepository
 import com.za.irecipe.Domain.repository.RecipeRepository
-import com.za.irecipe.Domain.repository.VisionRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,18 +66,6 @@ object DBModule {
             .baseUrl("https://vision.googleapis.com/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideVisionApiService(retrofit: Retrofit): VisionApiService {
-        return retrofit.create(VisionApiService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideVisionRepository(visionApiService: VisionApiService): VisionRepository {
-        return VisionRepositoryImpl(visionApiService)
     }
 
     @Provides
