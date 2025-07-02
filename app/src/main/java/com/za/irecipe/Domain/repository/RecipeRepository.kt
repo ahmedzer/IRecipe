@@ -1,5 +1,6 @@
 package com.za.irecipe.Domain.repository
 
+import com.za.irecipe.Data.entities.RecipeSourceType
 import com.za.irecipe.Data.entities.SavedWithRecipe
 import com.za.irecipe.Domain.model.PreparedRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
@@ -40,10 +41,16 @@ interface RecipeRepository {
     /**
      * save ai generated recipe
      * */
-    suspend fun saveAiRecipe(recipe: RecipeModel): Long
+    suspend fun saveAiRecipe(recipe: RecipeModel, type: RecipeSourceType): Long
 
     /**
      * get all saved recipes
      * */
     suspend fun getAllSavedRecipes(): List<SavedWithRecipe>
+
+    /**
+     * delete saved recipe where id = recipeId
+     * @param recipeId
+     * */
+    suspend fun deleteSavedRecipe(recipeId: Int)
 }

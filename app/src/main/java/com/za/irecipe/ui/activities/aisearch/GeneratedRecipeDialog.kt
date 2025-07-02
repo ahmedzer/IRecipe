@@ -66,6 +66,9 @@ fun GeneratedRecipeDialog(
                             RecipeCard(
                                 generatedRecipe.toData().toDomain(),
                                 onCardClick = { },
+                                onSave = {
+                                    onSaveRecipe(generatedRecipe)
+                                }
                             )
                         }
                     }

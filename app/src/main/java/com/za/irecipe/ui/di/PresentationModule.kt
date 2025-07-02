@@ -1,10 +1,12 @@
 package com.za.irecipe.ui.di
 
+import com.za.irecipe.Domain.useCase.DeleteSavedRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeWithRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetRecipeByIdUseCase
 import com.za.irecipe.Domain.useCase.InsertPreparedRecipeUseCase
+import com.za.irecipe.Domain.useCase.InsertRecipeUseCase
 import com.za.irecipe.ui.screens.home.HomeViewModel
 import com.za.irecipe.ui.screens.preparation.PreparationViewModel
 import com.za.irecipe.ui.screens.saved.SavedViewModel
@@ -23,10 +25,18 @@ object PresentationModule {
     fun provideHomeViewModel(
         getRecipesUseCase: GetAllRecipeUseCase,
         getRecipeByIdUseCase: GetRecipeByIdUseCase,
-        getAllPreparedRecipeUseCase: GetAllPreparedRecipeUseCase
+        getAllPreparedRecipeUseCase: GetAllPreparedRecipeUseCase,
+        insertRecipeUseCase: InsertRecipeUseCase,
+        deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase
     ): HomeViewModel {
 
-        return HomeViewModel(getRecipesUseCase, getRecipeByIdUseCase, getAllPreparedRecipeUseCase)
+        return HomeViewModel(
+            getRecipesUseCase,
+            getRecipeByIdUseCase,
+            getAllPreparedRecipeUseCase,
+            insertRecipeUseCase,
+            deleteSavedRecipeUseCase
+        )
     }
 
     @Provides

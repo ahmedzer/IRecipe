@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.za.irecipe.Data.entities.GeneratedRecipe
+import com.za.irecipe.Data.entities.RecipeSourceType
 import com.za.irecipe.Data.mapper.toData
 import com.za.irecipe.Data.mapper.toDomain
 import com.za.irecipe.Domain.model.DetectedObject
@@ -176,7 +177,7 @@ class AiSearchViewModel @Inject constructor(
         viewModelScope.launch {
             val result = try {
                 withContext(Dispatchers.IO) {
-                    insertRecipeUseCase.invoke(recipe.toData().toDomain())
+                    insertRecipeUseCase.invoke(recipe.toData().toDomain(), RecipeSourceType.AI)
                 }
             } catch (e: Exception) {
                 Log.e("AISearchViewModel", "Error inserting recipe", e)

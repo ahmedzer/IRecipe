@@ -1,6 +1,7 @@
 package com.za.irecipe.ui.screens.shared
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -58,8 +60,12 @@ import com.za.irecipe.util.convertTimestampToDate
 @Composable
 fun RecipeCard(
     recipe: RecipeModel,
-    onCardClick: ()->Unit
+    onCardClick: ()->Unit,
+    onSave: (RecipeModel)->Unit,
+    isSaved: Boolean = false
 ) {
+    val context = LocalContext.current
+
     Log.d("RecipeCard", "RecipeModel: ${recipe.calories} {${recipe.title}}")
     Card(
         onClick = {
@@ -115,11 +121,11 @@ fun RecipeCard(
                 Text(
                     recipe.title,
                     modifier = Modifier
-                        .padding(16.dp),
-                    maxLines = 1,
+                        .padding(16.dp).fillMaxWidth(),
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     color = Color.White,
-                    fontSize = 14.sp,
+                    fontSize = 18.sp,
                     fontFamily = FontFamily.Cursive,
                     style = TextStyle(textAlign = TextAlign.Center)
                 )
@@ -152,6 +158,7 @@ fun RecipeCard(
                 Text(
                     text = "${recipe.calories} cal",
                     fontSize = 12.sp,
+                    maxLines = 1
                 )
             }
             Row(
@@ -170,13 +177,15 @@ fun RecipeCard(
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 IconButton(
-                    onClick = { }
+                    onClick = {
+                        onSave(recipe)
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = null,
                         modifier = Modifier.size(25.dp),
-                        tint = MaterialTheme.colorScheme.primaryContainer
+                        tint = if(!isSaved) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onBackground
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))

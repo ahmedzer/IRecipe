@@ -5,17 +5,24 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.za.irecipe.Data.entities.RecipeSourceType
+import com.za.irecipe.Data.entities.SavedWithRecipe
 import com.za.irecipe.Domain.model.PreparedRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
+import com.za.irecipe.Domain.useCase.DeleteSavedRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetRecipeByIdUseCase
+import com.za.irecipe.Domain.useCase.InsertPreparedRecipeUseCase
+import com.za.irecipe.Domain.useCase.InsertRecipeUseCase
 import com.za.irecipe.ui.screens.shared.getRandomNumbersFromPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -27,7 +34,9 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getRecipesUseCase: GetAllRecipeUseCase,
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase,
-    private val getAllPreparedRecipeUseCase: GetAllPreparedRecipeUseCase
+    private val getAllPreparedRecipeUseCase: GetAllPreparedRecipeUseCase,
+    private val insertRecipeUseCase: InsertRecipeUseCase,
+    private val deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow<Boolean>(false)
@@ -46,6 +55,12 @@ class HomeViewModel @Inject constructor(
     private val _headerHeight = MutableStateFlow(200f)
     val headerHeight: StateFlow<Float> = _headerHeight.asStateFlow()
 
+    private val _savedRecipes = MutableStateFlow<List<SavedWithRecipe>>(emptyList())
+    val savedRecipes: StateFlow<List<SavedWithRecipe>> get() = _savedRecipes
+
+    private val _snackbarMessage = MutableSharedFlow<String>()
+    val snackbarMessage = _snackbarMessage.asSharedFlow()
+
     private val maxHeaderHeight = 200f
     private val minHeaderHeight = 30f
 
@@ -62,6 +77,17 @@ class HomeViewModel @Inject constructor(
                 _allPreparedRecipes.value = preparedRecipes
             } catch (e: Exception) {
                 Log.d("HomeViewModel | getAllPreparedRecipes", e.message.toString())
+            }
+        }
+    }
+
+    fun getAllRecipes() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _savedRecipes.value = getRecipesUseCase.getSavedRecipes()
+                getRecipesUseCase.invoke()
+            } catch (e: Exception) {
+                Log.d("HomeViewModel | getAllRecipes", e.message.toString())
             }
         }
     }
@@ -110,7 +136,39 @@ class HomeViewModel @Inject constructor(
         _headerHeight.value = maxHeaderHeight
     }
 
+    fun saveRecipe(recipe: RecipeModel, recipeSourceType: RecipeSourceType) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val id = insertRecipeUseCase.invoke(recipe, recipeSourceType)
+                Log.d("HomeViewModel | saveRecipe", "Recipe saved with id: $id")
+            } catch (e: Exception) {
+                Log.d("HomeViewModel | saveRecipe", e.message.toString())
+            }
+        }
+    }
+
+    fun refreshData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getRecipesUseCase.refreshData()
+            _savedRecipes.value = getRecipesUseCase.getSavedRecipes()
+        }
+    }
+
+    fun deleteSavedRecipe(recipeId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteSavedRecipeUseCase.invoke(recipeId)
+            _savedRecipes.value = getRecipesUseCase.getSavedRecipes()
+        }
+    }
+
+    fun showSnackbar(message: String) {
+        viewModelScope.launch {
+            _snackbarMessage.emit(message)
+        }
+    }
+
     init {
         getAllPreparedRecipes()
+        getAllRecipes()
     }
 }

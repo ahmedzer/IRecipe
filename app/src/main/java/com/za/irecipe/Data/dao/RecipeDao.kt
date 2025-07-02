@@ -46,4 +46,7 @@ interface RecipeDao {
     @Transaction
     @Query("SELECT * FROM saved_recipes")
     suspend fun getAllSavedRecipes(): List<SavedWithRecipe>
+
+    @Query("DELETE FROM saved_recipes WHERE id_recipe = :recipeId")
+    suspend fun deleteSavedRecipeById(recipeId: Int)
 }

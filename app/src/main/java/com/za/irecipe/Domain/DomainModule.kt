@@ -3,6 +3,7 @@ package com.za.irecipe.Domain
 import com.za.irecipe.Domain.repository.GenAiRepository
 import com.za.irecipe.Domain.repository.PreparationRepository
 import com.za.irecipe.Domain.repository.RecipeRepository
+import com.za.irecipe.Domain.useCase.DeleteSavedRecipeUseCase
 import com.za.irecipe.Domain.useCase.DetectObjectUseCase
 import com.za.irecipe.Domain.useCase.GenerateRecipesUseCase
 import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeUseCase
@@ -10,6 +11,7 @@ import com.za.irecipe.Domain.useCase.GetAllPreparedRecipeWithRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetAllRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetPreparedRecipeUseCase
 import com.za.irecipe.Domain.useCase.GetRecipeByIdUseCase
+import com.za.irecipe.Domain.useCase.InsertRecipeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,4 +64,17 @@ object DomainModule {
     fun provideGenerateRecipesUseCase(genAiRepository: GenAiRepository): GenerateRecipesUseCase {
         return GenerateRecipesUseCase(genAiRepository)
     }
+
+    @Provides
+    @Singleton
+    fun provideInsertRecipeUseCase(recipeRepository: RecipeRepository): InsertRecipeUseCase {
+        return InsertRecipeUseCase(recipeRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteSavedRecipeUseCase(recipeRepository: RecipeRepository): DeleteSavedRecipeUseCase {
+        return DeleteSavedRecipeUseCase(recipeRepository)
+    }
+
 }
