@@ -68,7 +68,8 @@ fun GeneratedRecipeDialog(
                                 onCardClick = { },
                                 onSave = {
                                     onSaveRecipe(generatedRecipe)
-                                }
+                                },
+                                isSaved = false
                             )
                         }
                     }

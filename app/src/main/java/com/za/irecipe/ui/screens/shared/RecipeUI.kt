@@ -62,9 +62,9 @@ fun RecipeCard(
     recipe: RecipeModel,
     onCardClick: ()->Unit,
     onSave: (RecipeModel)->Unit,
-    isSaved: Boolean = false
+    isSaved: Boolean = false,
+    showActions: Boolean = true
 ) {
-    val context = LocalContext.current
 
     Log.d("RecipeCard", "RecipeModel: ${recipe.calories} {${recipe.title}}")
     Card(
@@ -161,43 +161,45 @@ fun RecipeCard(
                     maxLines = 1
                 )
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                IconButton(
-                    onClick = { }
+            if(showActions) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = null,
-                        modifier = Modifier.size(25.dp),
-                        tint = MaterialTheme.colorScheme.primaryContainer
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                IconButton(
-                    onClick = {
-                        onSave(recipe)
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = null,
+                            modifier = Modifier.size(25.dp),
+                            tint = MaterialTheme.colorScheme.primaryContainer
+                        )
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = null,
-                        modifier = Modifier.size(25.dp),
-                        tint = if(!isSaved) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onBackground
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                IconButton(
-                    onClick = { }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Share,
-                        modifier = Modifier.size(25.dp),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primaryContainer
-                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    IconButton(
+                        onClick = {
+                            onSave(recipe)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier.size(25.dp),
+                            tint = if(!isSaved) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            modifier = Modifier.size(25.dp),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    }
                 }
             }
         }

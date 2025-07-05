@@ -70,6 +70,7 @@ import com.za.irecipe.ui.screens.shared.IngredientCard
 import com.za.irecipe.ui.screens.shared.IngredientDetectionDialog
 import com.za.irecipe.ui.theme.IRecipeTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AiSearchActivity : ComponentActivity() {
@@ -124,20 +125,12 @@ fun SearchMainScreen(
         viewModel.setBitmapFromCamera(bmp)
     }
 
-    val insertionResult by viewModel.insertionResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(insertionResult) {
-        when {
-            insertionResult != null && insertionResult!! > 0L -> {
-                snackbarHostState.showSnackbar("Recipe saved successfully", duration = SnackbarDuration.Short)
-                viewModel.resetInsertionResult()
-                viewModel.resetInsertionResult()
-            }
-            insertionResult == -1L -> {
-                snackbarHostState.showSnackbar("Failed to save recipe", duration = SnackbarDuration.Short)
-                viewModel.resetInsertionResult()
-                viewModel.resetInsertionResult()
+    LaunchedEffect(Unit) {
+        launch {
+            viewModel.snackbarMessage.collect { message ->
+                snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Short)
             }
         }
     }
@@ -203,11 +196,12 @@ fun SearchMainScreen(
                                 expanded = true
                             },
                             shape = CircleShape,
-                            containerColor = MaterialTheme.colorScheme.primary
+                            containerColor = MaterialTheme.colorScheme.onBackground
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.background
                             )
                         }
                     }
@@ -382,7 +376,9 @@ fun SearchMainScreen(
                 viewModel.onCloseRecipeDialog()
             },
             generatedRecipe = generatedRecipes,
-            onSaveRecipe = { },
+            onSaveRecipe = {
+                viewModel.onSaveRecipe(it)
+            },
             onSaveAll = { }
         )
     }

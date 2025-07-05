@@ -51,8 +51,9 @@ object PresentationModule {
     @Provides
     @Singleton
     fun provideSavedViewModel(
-        getAllPreparedRecipeWithRecipeUseCase: GetAllPreparedRecipeWithRecipeUseCase
+        getAllPreparedRecipeWithRecipeUseCase: GetAllPreparedRecipeWithRecipeUseCase,
+        getAllRecipeUseCase: GetAllRecipeUseCase
     ): SavedViewModel {
-        return SavedViewModel(getAllPreparedRecipeWithRecipeUseCase)
+        return SavedViewModel(getAllPreparedRecipeWithRecipeUseCase, getAllRecipeUseCase)
     }
 }

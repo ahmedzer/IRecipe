@@ -141,6 +141,11 @@ class HomeViewModel @Inject constructor(
             try {
                 val id = insertRecipeUseCase.invoke(recipe, recipeSourceType)
                 Log.d("HomeViewModel | saveRecipe", "Recipe saved with id: $id")
+                if(id.toInt() != -1) {
+                    showSnackbar("Recipe removed from saved")
+                }else {
+                    showSnackbar("Error while saving the recipe")
+                }
             } catch (e: Exception) {
                 Log.d("HomeViewModel | saveRecipe", e.message.toString())
             }

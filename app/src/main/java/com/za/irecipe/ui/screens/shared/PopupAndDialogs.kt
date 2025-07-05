@@ -224,7 +224,7 @@ fun IngredientDetectionDialog(
         Column(
             modifier = Modifier
                 .background(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(4.dp)
                 )
                 .padding(10.dp).fillMaxWidth(),

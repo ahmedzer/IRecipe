@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.za.irecipe.Data.entities.GeneratedRecipe
 import com.za.irecipe.Data.entities.RecipeSourceType
+import com.za.irecipe.Data.entities.SavedWithRecipe
 import com.za.irecipe.Data.mapper.toData
 import com.za.irecipe.Data.mapper.toDomain
 import com.za.irecipe.Domain.model.DetectedObject
@@ -24,8 +25,10 @@ import com.za.irecipe.Domain.useCase.InsertRecipeUseCase
 import com.za.irecipe.ui.model.toByteArray
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -63,8 +66,8 @@ class AiSearchViewModel @Inject constructor(
     private val _isGenerationInProgress = MutableLiveData<Boolean>(false)
     val isGenerationInProgress: LiveData<Boolean> get() = _isGenerationInProgress
 
-    private val _insertionResult = MutableStateFlow<Long?>(null)
-    val insertionResult: StateFlow<Long?> get() = _insertionResult
+    private val _snackbarMessage = MutableSharedFlow<String>()
+    val snackbarMessage = _snackbarMessage.asSharedFlow()
 
     private fun getAllRecipes() {
         _allRecipes.value = emptyList()
@@ -177,23 +180,26 @@ class AiSearchViewModel @Inject constructor(
         viewModelScope.launch {
             val result = try {
                 withContext(Dispatchers.IO) {
-                    insertRecipeUseCase.invoke(recipe.toData().toDomain(), RecipeSourceType.AI)
+                    val id = insertRecipeUseCase.invoke(recipe.toData().toDomain(), RecipeSourceType.AI)
+                    if(id.toInt() != -1) {
+                        showSnackbar("Recipe saved successfully")
+                    }else {
+                        showSnackbar("Error while saving the recipe")
+                    }
+                    id
                 }
             } catch (e: Exception) {
                 Log.e("AISearchViewModel", "Error inserting recipe", e)
                 -1L
             }
-            _insertionResult.value = result
             Log.e("AISearchViewModel", "$result")
         }
     }
 
-    fun isRecipeSaved(idRecipe: Int): Boolean {
-        return getAllRecipeUseCase.isRecipeSaved(idRecipe)
-    }
-
-    fun resetInsertionResult() {
-        _insertionResult.value = null
+    fun showSnackbar(message: String) {
+        viewModelScope.launch {
+            _snackbarMessage.emit(message)
+        }
     }
 
     init {
