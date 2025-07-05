@@ -84,7 +84,12 @@ fun GeneratedRecipeDialog(
                     TextButton(onClick = onDismiss) {
                         Text("Cancel")
                     }
-                    TextButton(onClick = onSaveAll) {
+                    TextButton(
+                        onClick = {
+                            onSaveAll()
+                            onDismiss()
+                        }
+                    ) {
                         Text("Save All")
                     }
                 }

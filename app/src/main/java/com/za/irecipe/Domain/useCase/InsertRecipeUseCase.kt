@@ -11,4 +11,10 @@ class InsertRecipeUseCase @Inject constructor(
     suspend operator fun invoke(recipe: RecipeModel, type: RecipeSourceType): Long {
         return recipeRepository.saveAiRecipe(recipe, type)
     }
+
+    suspend operator fun invoke(recipes: List<RecipeModel>): List<Long> {
+        return recipes.map { recipe ->
+            recipeRepository.saveAiRecipe(recipe, RecipeSourceType.AI)
+        }
+    }
 }

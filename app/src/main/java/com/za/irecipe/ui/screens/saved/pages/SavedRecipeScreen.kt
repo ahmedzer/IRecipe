@@ -5,8 +5,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.RestoreFromTrash
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,54 +41,68 @@ fun SavedRecipesScreen(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = if(aiRecipes.isEmpty() && manualRecipes.isEmpty()) Arrangement.Center else Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
         item {
-            Text(
-                text = "AI Recipes",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(16.dp)
-            )
+            if(aiRecipes.isNotEmpty()) {
+                Text(
+                    text = "AI Recipes",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
 
-            LazyRow (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
-            ) {
-                items(aiRecipes.size) { index ->
-                    RecipeCard(
-                        recipe = aiRecipes[index].recipe.toDomain(),
-                        isSaved = true,
-                        onSave = {},
-                        onCardClick = {},
-                        showActions = false
-                    )
+                LazyRow (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(aiRecipes.size) { index ->
+                        RecipeCard(
+                            recipe = aiRecipes[index].recipe.toDomain(),
+                            isSaved = true,
+                            onSave = {},
+                            onCardClick = {},
+                            showActions = false
+                        )
+                    }
                 }
             }
         }
 
         item {
-            Text(
-                text = "My saved Recipes",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(16.dp)
-            )
+            if(manualRecipes.isNotEmpty()) {
+                Text(
+                    text = "My saved Recipes",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
 
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
-            ) {
-                items(manualRecipes.size) { index ->
-                    RecipeCard(
-                        recipe = manualRecipes[index].recipe.toDomain(),
-                        isSaved = true,
-                        onSave = {},
-                        onCardClick = {},
-                        showActions = false
-                    )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(manualRecipes.size) { index ->
+                        RecipeCard(
+                            recipe = manualRecipes[index].recipe.toDomain(),
+                            isSaved = true,
+                            onSave = {},
+                            onCardClick = {},
+                            showActions = false
+                        )
+                    }
                 }
+            }
+        }
+        if(aiRecipes.isEmpty() && manualRecipes.isEmpty()) {
+            item {
+                Icon(
+                    imageVector = Icons.Default.RestoreFromTrash,
+                    contentDescription = "Empty Icon",
+                    modifier = Modifier.size(100.dp),
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
     }

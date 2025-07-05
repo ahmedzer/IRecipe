@@ -183,6 +183,7 @@ class AiSearchViewModel @Inject constructor(
                     val id = insertRecipeUseCase.invoke(recipe.toData().toDomain(), RecipeSourceType.AI)
                     if(id.toInt() != -1) {
                         showSnackbar("Recipe saved successfully")
+                        getAllRecipeUseCase.refreshData()
                     }else {
                         showSnackbar("Error while saving the recipe")
                     }
@@ -193,6 +194,18 @@ class AiSearchViewModel @Inject constructor(
                 -1L
             }
             Log.e("AISearchViewModel", "$result")
+        }
+    }
+
+    fun onSaveAllRecipes(recipes: List<GeneratedRecipe>) {
+        viewModelScope.launch {
+            try {
+                insertRecipeUseCase.invoke(recipes.map { it.toData().toDomain() })
+                showSnackbar("Recipes saved successfully")
+            }catch (e: Exception) {
+                Log.e("AISearchViewModel", "Error inserting recipes", e)
+                showSnackbar("Error while saving the recipes")
+            }
         }
     }
 

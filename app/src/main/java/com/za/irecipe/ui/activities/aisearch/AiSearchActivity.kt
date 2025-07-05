@@ -27,8 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
@@ -65,7 +63,6 @@ import androidx.compose.ui.zIndex
 import com.spr.jetpack_loading.components.indicators.BallTrianglePathIndicator
 import com.za.irecipe.R
 import com.za.irecipe.ui.screens.shared.BannerWithImage
-import com.za.irecipe.ui.screens.shared.ButtonWithImageVector
 import com.za.irecipe.ui.screens.shared.IngredientCard
 import com.za.irecipe.ui.screens.shared.IngredientDetectionDialog
 import com.za.irecipe.ui.theme.IRecipeTheme
@@ -379,7 +376,9 @@ fun SearchMainScreen(
             onSaveRecipe = {
                 viewModel.onSaveRecipe(it)
             },
-            onSaveAll = { }
+            onSaveAll = {
+                viewModel.onSaveAllRecipes(generatedRecipes)
+            }
         )
     }
 }
