@@ -58,13 +58,14 @@ import com.za.irecipe.ui.screens.home.HomeViewModel
 import com.za.irecipe.ui.screens.shared.InstructionCard
 import com.za.irecipe.ui.screens.shared.LoadImageFromName
 import com.za.irecipe.ui.screens.shared.PopupDetailedMessage
+import com.za.irecipe.ui.screens.shared.viewmodels.RecipeScreenViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecipeScreen(
-    homeViewModel: HomeViewModel = hiltViewModel()
+    recipeScreenViewModel: RecipeScreenViewModel = hiltViewModel()
 ) {
-    val recipe by homeViewModel.selectedRecipe.collectAsState(initial = null)
+    val recipe by recipeScreenViewModel.selectedRecipe.collectAsState(initial = null)
     var expanded by remember { mutableStateOf(false) }
     val visibleIngredients = remember { mutableIntStateOf(8) }
 

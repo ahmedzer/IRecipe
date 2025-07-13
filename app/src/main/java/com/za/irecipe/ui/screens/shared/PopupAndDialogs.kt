@@ -296,3 +296,8 @@ fun IngredientDetectionDialog(
         }
     }
 }
+
+@Composable
+fun ConfirmationDialog() {
+
+}

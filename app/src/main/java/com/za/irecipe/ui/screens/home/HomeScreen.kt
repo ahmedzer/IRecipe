@@ -61,11 +61,13 @@ import com.za.irecipe.ui.activities.aisearch.AiSearchActivity
 import com.za.irecipe.ui.model.BannerPage
 import com.za.irecipe.ui.screens.shared.BannerPager
 import com.za.irecipe.ui.screens.shared.RecipeCard
+import com.za.irecipe.ui.screens.shared.viewmodels.RecipeScreenViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
+    recipeScreenViewModel: RecipeScreenViewModel = hiltViewModel<RecipeScreenViewModel>(),
     navController: NavHostController,
 ) {
     val context = LocalContext.current
@@ -170,16 +172,15 @@ fun HomeScreen(
                         dayRecipes.forEachIndexed { index, recipe ->
                             item {
                                 RecipeCard(
-                                    recipe!!, onCardClick = {
-                                        homeViewModel.openRecipeScreen(recipe, navController)
+                                    recipe!!,
+                                    onCardClick = {
+                                        recipeScreenViewModel.openRecipeScreen(recipe, navController)
                                     },
                                     onSave = { recipe ->
                                         if (savedRecipes.any { it.recipe.id_recpie == recipe.id }) {
                                             homeViewModel.deleteSavedRecipe(recipe.id)
-                                            homeViewModel.showSnackbar("Recipe removed from saved")
                                         } else {
                                             homeViewModel.saveRecipe(recipe, RecipeSourceType.Manual)
-                                            homeViewModel.showSnackbar("Recipe saved")
                                         }
                                         homeViewModel.refreshData()
                                     },

@@ -21,14 +21,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.za.irecipe.Data.entities.RecipeSourceType
 import com.za.irecipe.Data.mapper.toDomain
 import com.za.irecipe.ui.screens.saved.SavedViewModel
 import com.za.irecipe.ui.screens.shared.RecipeCard
+import com.za.irecipe.ui.screens.shared.viewmodels.RecipeScreenViewModel
 
 @Composable
 fun SavedRecipesScreen(
     savedViewModel: SavedViewModel = hiltViewModel(),
+    recipeScreenViewModel: RecipeScreenViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
     LaunchedEffect(Unit) {
         savedViewModel.getSavedRecipes()
@@ -88,7 +92,9 @@ fun SavedRecipesScreen(
                             recipe = manualRecipes[index].recipe.toDomain(),
                             isSaved = true,
                             onSave = {},
-                            onCardClick = {},
+                            onCardClick = {
+                                recipeScreenViewModel.openRecipeScreen(manualRecipes[index].recipe.toDomain(), navController)
+                            },
                             showActions = false
                         )
                     }

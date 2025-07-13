@@ -15,11 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.za.irecipe.ui.screens.saved.SavedViewModel
 import com.za.irecipe.ui.screens.shared.PreparedRecipeCard
 
 @Composable
-fun CookingHistoryPage(viewModel: SavedViewModel = hiltViewModel()) {
+fun CookingHistoryPage(
+    viewModel: SavedViewModel = hiltViewModel()
+) {
     val preparedRecipes by viewModel.preparedRecipes.collectAsState()
 
     LazyColumn(

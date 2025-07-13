@@ -256,7 +256,7 @@ fun SearchMainScreen(
 
                 BannerWithImage(
                     title = "Ai Search",
-                    text = "lkejflqfkhdfkqjhdj lqhflqdhf lqhfdj lqhdfqd lqhdf",
+                    text = "Scan ingredients with a photo and get instant AI-generated recipes.",
                     image = R.drawable.search_design
                 )
 

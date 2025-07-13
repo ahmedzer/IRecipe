@@ -142,7 +142,7 @@ class HomeViewModel @Inject constructor(
                 val id = insertRecipeUseCase.invoke(recipe, recipeSourceType)
                 Log.d("HomeViewModel | saveRecipe", "Recipe saved with id: $id")
                 if(id.toInt() != -1) {
-                    showSnackbar("Recipe removed from saved")
+                    showSnackbar("Recipe saved")
                 }else {
                     showSnackbar("Error while saving the recipe")
                 }
@@ -161,8 +161,15 @@ class HomeViewModel @Inject constructor(
 
     fun deleteSavedRecipe(recipeId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteSavedRecipeUseCase.invoke(recipeId)
-            _savedRecipes.value = getRecipesUseCase.getSavedRecipes()
+            try {
+                deleteSavedRecipeUseCase.invoke(recipeId)
+                _savedRecipes.value = getRecipesUseCase.getSavedRecipes()
+                showSnackbar("Recipe removed from saved")
+            }catch (e: Exception) {
+                showSnackbar("Error while saving the recipe")
+                Log.d("HomeViewModel | deleteSavedRecipe", e.message.toString())
+            }
+
         }
     }
 

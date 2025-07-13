@@ -64,13 +64,11 @@ class MainActivity : ComponentActivity() {
                     data = "package:$packageName".toUri()
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
-                startActivity(intent)  // This ensures that the permission dialog is shown
+                startActivity(intent)
             } else {
-                // Permission granted, schedule alarm
                 AlarmScheduler.scheduleMidnightAlarm(applicationContext)
             }
         } else {
-            // If the SDK version is below Android S, schedule alarm normally
             AlarmScheduler.scheduleMidnightAlarm(applicationContext)
         }
     }

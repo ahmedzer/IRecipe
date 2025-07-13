@@ -25,7 +25,7 @@ fun AppBottomNav(
             HomeScreen(navController = navController)
         }
         composable(Screens.Saved.route) {
-            SavedScreen()
+            SavedScreen(navController = navController)
         }
         composable(Screens.RecipeScreen.route) {
             RecipeScreen()

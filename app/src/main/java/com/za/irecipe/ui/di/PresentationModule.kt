@@ -10,6 +10,7 @@ import com.za.irecipe.Domain.useCase.InsertRecipeUseCase
 import com.za.irecipe.ui.screens.home.HomeViewModel
 import com.za.irecipe.ui.screens.preparation.PreparationViewModel
 import com.za.irecipe.ui.screens.saved.SavedViewModel
+import com.za.irecipe.ui.screens.shared.viewmodels.RecipeScreenViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,5 +56,11 @@ object PresentationModule {
         getAllRecipeUseCase: GetAllRecipeUseCase
     ): SavedViewModel {
         return SavedViewModel(getAllPreparedRecipeWithRecipeUseCase, getAllRecipeUseCase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecipeScreenViewModel(): RecipeScreenViewModel {
+        return RecipeScreenViewModel()
     }
 }
