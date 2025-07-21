@@ -56,6 +56,3 @@ Find the most relevant and creative recipes using simple keywords or ideas. Back
 - Kotlin 1.8+
 - Google Cloud API Key (for Gemini API)
 
-### Installation
-```bash
-git clone https://github.com/yourusername/connected-dispenser-app.git
