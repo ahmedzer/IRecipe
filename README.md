@@ -44,7 +44,6 @@ Find the most relevant and creative recipes using simple keywords or ideas. Back
 - **Dagger Hilt**
 - **Retrofit + Moshi/Gson**
 - **Room + Kotlin Flow**
-- **CameraX / ML Kit**
 - **Google Cloud Gemini API**
 
 ---
