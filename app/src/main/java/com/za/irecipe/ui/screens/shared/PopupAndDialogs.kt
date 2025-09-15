@@ -54,6 +54,7 @@ import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.R
 import com.za.irecipe.util.createImageFile
 import java.io.File
+import java.io.FileOutputStream
 import java.util.Date
 
 @Composable
@@ -100,13 +101,34 @@ fun InsertPreparedRecipeDialog(
     var photoUri by remember { mutableStateOf<Uri?>(null) }
     var selectedImageBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
-
+    // Camera launcher
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
         if (success && photoUri != null) {
             val source = ImageDecoder.createSource(context.contentResolver, photoUri!!)
-            selectedImageBitmap = ImageDecoder.decodeBitmap(source)
+            val bitmap = ImageDecoder.decodeBitmap(source)
+            selectedImageBitmap = bitmap
+        }
+    }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            try {
+                val source = ImageDecoder.createSource(context.contentResolver, it)
+                val bitmap = ImageDecoder.decodeBitmap(source)
+                selectedImageBitmap = bitmap
+                val imageFile = createImageFile(context)
+                FileOutputStream(imageFile).use { out ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+                }
+                photoFile = imageFile
+                photoUri = null
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -117,7 +139,7 @@ fun InsertPreparedRecipeDialog(
         Column(
             modifier = Modifier
                 .background(
-                    color = MaterialTheme.colorScheme.background,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(4.dp)
                 )
                 .padding(10.dp),
@@ -137,19 +159,31 @@ fun InsertPreparedRecipeDialog(
             Text(recipeModel.title, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(20.dp))
 
+            // Camera
             ButtonWithIcon(
                 onClick = {
                     val imageFile = createImageFile(context)
                     photoFile = imageFile
                     photoUri = FileProvider.getUriForFile(
                         context,
-                        "${context.packageName}.provider",  // Be sure to match manifest
+                        "${context.packageName}.provider",
                         imageFile
                     )
                     cameraLauncher.launch(photoUri!!)
                 },
                 text = "Take Photo with Camera",
                 icon = R.drawable.ic_camera
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Gallery
+            ButtonWithIcon(
+                onClick = {
+                    galleryLauncher.launch("image/*")
+                },
+                text = "Select Image from Gallery",
+                icon = R.drawable.ic_gallery
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -186,19 +220,20 @@ fun InsertPreparedRecipeDialog(
 
                 TextButton(
                     onClick = {
-                        photoFile?.let {
+                        photoFile?.absolutePath?.let { imagePath ->
                             onSubmit(
                                 PreparedRecipeModel(
                                     null,
                                     id_recipe = recipeModel.id,
                                     preparationTime = preparationTime,
-                                    imagePath = it.absolutePath,  // Save path to file
+                                    imagePath = imagePath,
                                     preparationDay = Date().time.toString()
                                 )
                             )
-                            onDismiss()
                         }
-                    }
+                        onDismiss()
+                    },
+                    enabled = photoFile != null
                 ) {
                     Text("Save")
                 }
@@ -206,6 +241,7 @@ fun InsertPreparedRecipeDialog(
         }
     }
 }
+
 
 @Composable
 fun IngredientDetectionDialog(

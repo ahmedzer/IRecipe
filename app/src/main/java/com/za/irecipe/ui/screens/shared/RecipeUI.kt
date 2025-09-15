@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
@@ -54,6 +55,7 @@ import coil3.compose.AsyncImage
 import com.za.irecipe.Domain.model.PreparedRecipeWithRecipeModel
 import com.za.irecipe.Domain.model.RecipeModel
 import com.za.irecipe.R
+import com.za.irecipe.ui.extension.shimmer
 import com.za.irecipe.ui.theme.IRecipeTheme
 import com.za.irecipe.util.convertTimestampToDate
 
@@ -205,6 +207,7 @@ fun RecipeCard(
         }
     }
 }
+
 
 @Composable
 fun InstructionCard(
@@ -379,6 +382,98 @@ fun IngredientCard(
     }
 }
 
+
+@Composable
+fun RecipeCardShimmer() {
+    Card(
+        modifier = Modifier
+            .width(250.dp)
+            .height(200.dp),
+        shape = RoundedCornerShape(10.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.onPrimaryContainer, RoundedCornerShape(10.dp))
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(250.dp, 120.dp)
+                    .clip(RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp))
+                    .shimmer()
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+            Box(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .height(20.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .shimmer()
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            // Info row shimmer
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(15.dp)
+                        .clip(CircleShape)
+                        .shimmer()
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .height(12.dp)
+                        .width(60.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .shimmer()
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .shimmer()
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .height(12.dp)
+                        .width(40.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .shimmer()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                repeat(3) {
+                    Box(
+                        modifier = Modifier
+                            .size(25.dp)
+                            .clip(CircleShape)
+                            .shimmer()
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+            }
+        }
+    }
+}
+
 @Preview()
 @Composable
 fun InstructionCardPreview(
@@ -399,5 +494,13 @@ fun InfoRowPreview() {
             value = "03/02/2000",
             icon = Icons.Default.CalendarToday
         )
+    }
+}
+
+@Preview(name = "Recipe shimmer effect", showBackground = true)
+@Composable
+fun RecipeCardShimmerPreview() {
+    IRecipeTheme {
+        RecipeCardShimmer()
     }
 }

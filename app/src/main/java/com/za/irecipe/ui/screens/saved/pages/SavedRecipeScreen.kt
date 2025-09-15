@@ -2,13 +2,16 @@ package com.za.irecipe.ui.screens.saved.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.RestoreFromTrash
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -46,7 +49,7 @@ fun SavedRecipesScreen(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = if(aiRecipes.isEmpty() && manualRecipes.isEmpty()) Arrangement.Center else Arrangement.Top,
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
             if(aiRecipes.isNotEmpty()) {
@@ -104,10 +107,16 @@ fun SavedRecipesScreen(
         if(aiRecipes.isEmpty() && manualRecipes.isEmpty()) {
             item {
                 Icon(
-                    imageVector = Icons.Default.RestoreFromTrash,
+                    imageVector = Icons.Default.HourglassEmpty,
                     contentDescription = "Empty Icon",
                     modifier = Modifier.size(100.dp),
                     tint = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "No saved recipes",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

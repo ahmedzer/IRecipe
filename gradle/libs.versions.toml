@@ -1,4 +1,5 @@
 [versions]
+accompanistPlaceholderMaterial3 = "0.33.2-alpha"
 accompanistSystemuicontroller = "0.27.0"
 agp = "8.9.0"
 animation = "1.7.8"
@@ -35,6 +36,7 @@ workRuntimeKtx = "2.10.0"
 junitKtx = "1.2.1"
 
 [libraries]
+accompanist-placeholder-material3 = { module = "com.google.accompanist:accompanist-placeholder-material3", version.ref = "accompanistPlaceholderMaterial3" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }

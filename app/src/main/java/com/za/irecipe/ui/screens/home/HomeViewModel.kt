@@ -93,6 +93,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getDayRecipes(context: Context) {
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val ids = getRandomNumbersFromPreferences(context)
@@ -107,6 +108,7 @@ class HomeViewModel @Inject constructor(
                     _dayRecipes.value = emptyList()
                     _dayRecipes.value += recipes
                 }
+                _isLoading.value = false
             } catch (e: Exception) {
                 Log.d("HomeViewModel | getRecipeById", e.message.toString())
             }

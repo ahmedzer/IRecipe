@@ -61,6 +61,7 @@ import com.za.irecipe.ui.activities.aisearch.AiSearchActivity
 import com.za.irecipe.ui.model.BannerPage
 import com.za.irecipe.ui.screens.shared.BannerPager
 import com.za.irecipe.ui.screens.shared.RecipeCard
+import com.za.irecipe.ui.screens.shared.RecipeCardShimmer
 import com.za.irecipe.ui.screens.shared.viewmodels.RecipeScreenViewModel
 import kotlinx.coroutines.launch
 
@@ -74,6 +75,7 @@ fun HomeScreen(
     homeViewModel.getDayRecipes(context)
 
     val dayRecipes by homeViewModel.dayRecipes.collectAsState(emptyList())
+    val isLoading by homeViewModel.isLoading.collectAsState(true)
     val preparedRecipes by homeViewModel.allPreparedRecipes.collectAsState(emptyList())
     val lazyListState = rememberLazyListState()
 
@@ -169,28 +171,39 @@ fun HomeScreen(
                     LazyRow(
                         contentPadding = PaddingValues(10.dp)
                     ) {
-                        dayRecipes.forEachIndexed { index, recipe ->
-                            item {
-                                RecipeCard(
-                                    recipe!!,
-                                    onCardClick = {
-                                        recipeScreenViewModel.openRecipeScreen(recipe, navController)
-                                    },
-                                    onSave = { recipe ->
-                                        if (savedRecipes.any { it.recipe.id_recpie == recipe.id }) {
-                                            homeViewModel.deleteSavedRecipe(recipe.id)
-                                        } else {
-                                            homeViewModel.saveRecipe(recipe, RecipeSourceType.Manual)
-                                        }
-                                        homeViewModel.refreshData()
-                                    },
-                                    isSaved = savedRecipes.any {
-                                        it.recipe.id_recpie == recipe.id
-                                    }
-                                )
-                                Spacer(modifier = Modifier.width(10.dp))
+                        if(isLoading) {
+                            for(i in 1..5) {
+                                item {
+                                    RecipeCardShimmer()
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                }
                             }
                         }
+                        else {
+                            dayRecipes.forEachIndexed { index, recipe ->
+                                item {
+                                    RecipeCard(
+                                        recipe!!,
+                                        onCardClick = {
+                                            recipeScreenViewModel.openRecipeScreen(recipe, navController)
+                                        },
+                                        onSave = { recipe ->
+                                            if (savedRecipes.any { it.recipe.id_recpie == recipe.id }) {
+                                                homeViewModel.deleteSavedRecipe(recipe.id)
+                                            } else {
+                                                homeViewModel.saveRecipe(recipe, RecipeSourceType.Manual)
+                                            }
+                                            homeViewModel.refreshData()
+                                        },
+                                        isSaved = savedRecipes.any {
+                                            it.recipe.id_recpie == recipe.id
+                                        }
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                }
+                            }
+                        }
+
                     }
                 }
 
