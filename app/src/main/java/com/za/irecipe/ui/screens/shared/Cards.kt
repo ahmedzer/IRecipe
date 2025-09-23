@@ -103,16 +103,13 @@ fun BannerWithImage(
 
     Card(
         colors = CardColors(
-            containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onBackground,
             disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,
             disabledContentColor = MaterialTheme.colorScheme.onBackground
         ),
         shape = RoundedCornerShape(7.dp),
         modifier = cardModifier,
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 4.dp
-        )
     ) {
         Row (
             modifier = Modifier.padding(10.dp),
@@ -182,6 +179,21 @@ fun DetectedIngredientResponsePreview() {
             onDeleteObject = {
 
             }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BannerWithImagePreview() {
+    IRecipeTheme {
+        BannerWithImage(
+            title = "Welcome",
+            text = "Discover amazing recipes tailored just for you.",
+            image = R.drawable.ic_launcher_foreground,
+            isClickable = true,
+            onClick = { },
+            showArrow = true
         )
     }
 }

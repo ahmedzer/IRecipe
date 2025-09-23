@@ -13,7 +13,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.za.irecipe.Data.entities.GeneratedRecipe
 import com.za.irecipe.Data.entities.RecipeSourceType
-import com.za.irecipe.Data.entities.SavedWithRecipe
 import com.za.irecipe.Data.mapper.toData
 import com.za.irecipe.Data.mapper.toDomain
 import com.za.irecipe.Domain.model.DetectedObject

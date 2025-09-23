@@ -67,18 +67,18 @@ fun BannerPager(
                 )
 
                 val animatedWidth by animateDpAsState(
-                    targetValue = if (isSelected) 20.dp else 10.dp,
+                    targetValue = if (isSelected) 15.dp else 5.dp,
                     label = "DotWidth"
                 )
 
                 Box(
                     modifier = Modifier
-                        .padding(horizontal = 4.dp)
+                        .padding(horizontal = 2.dp)
                         .background(
                             color = animatedColor,
                             shape = CircleShape
                         )
-                        .size(width = animatedWidth, height = 10.dp)
+                        .size(width = animatedWidth, height = 5.dp)
                 )
             }
         }
