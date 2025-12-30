@@ -1,5 +1,8 @@
 # IRecipe
 
+
+https://github.com/user-attachments/assets/56c06840-c5df-4696-bfa5-941b4e5de80c
+
 An Android app for **recipe discovery**, **ingredient-based suggestions**, and **maintenance management** of a connected dispenser. Designed for users who love experimenting with recipes and need a smart way to manage their kitchen or bar setup.
 
 ---
